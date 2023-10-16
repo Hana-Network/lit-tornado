@@ -4,7 +4,7 @@ pragma solidity ^0.8.9;
 import "./MerkleTreeWithHistory.sol";
 import "../node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract Tornado is MerkleTreeWithHistory, ReentrancyGuard {
+contract LitTornado is MerkleTreeWithHistory, ReentrancyGuard {
     address public verifier;
     uint256 public denomination;
 
