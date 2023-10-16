@@ -2,7 +2,7 @@
 pragma solidity ^0.8.9;
 
 import "./MerkleTreeWithHistory.sol";
-import "../node_modules/@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "../node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 interface IVerifier {
     function verifyProof(
