@@ -2,11 +2,10 @@
 pragma solidity ^0.8.9;
 
 contract MerkleTreeWithHistory {
-    uint256 public constant FIELD_SIZE =
-        21888242871839275222246405745257275088548364400416034343698204186575808495617;
-    uint256 public constant ZERO_VALUE =
-        21663839004416932945382355908790599225266501822907911457504978515578255421292; // = keccak256("tornado") % FIELD_SIZE
-
+    // uint256 public constant FIELD_SIZE =
+    //     21888242871839275222246405745257275088548364400416034343698204186575808495617;
+    // uint256 public constant ZERO_VALUE =
+    //     21663839004416932945382355908790599225266501822907911457504978515578255421292; // = keccak256("tornado") % FIELD_SIZE
     uint32 public levels;
 
     mapping(uint256 => bytes32) public filledSubtrees;
@@ -31,14 +30,14 @@ contract MerkleTreeWithHistory {
         bytes32 _left,
         bytes32 _right
     ) public pure returns (bytes32) {
-        require(
-            uint256(_left) < FIELD_SIZE,
-            "_left should be inside the field"
-        );
-        require(
-            uint256(_right) < FIELD_SIZE,
-            "_right should be inside the field"
-        );
+        // require(
+        //     uint256(_left) < FIELD_SIZE,
+        //     "_left should be inside the field"
+        // );
+        // require(
+        //     uint256(_right) < FIELD_SIZE,
+        //     "_right should be inside the field"
+        // );
         return keccak256(abi.encodePacked(_left, _right));
     }
 
@@ -95,6 +94,27 @@ contract MerkleTreeWithHistory {
     /// @dev Returns the last root
     function getLastRoot() public view returns (bytes32) {
         return roots[currentRootIndex];
+    }
+
+    function generateProof(
+        bytes32 leaf,
+        uint32 _index
+    ) public view returns (bytes32[] memory proof) {
+        proof = new bytes32[](levels);
+        bytes32 currentLevelHash = leaf;
+        for (uint32 i = 0; i < levels; i++) {
+            if (_index % 2 == 0) {
+                proof[i] = filledSubtrees[i];
+            } else {
+                proof[i] = currentLevelHash;
+            }
+            currentLevelHash = hashLeftRight(
+                currentLevelHash,
+                filledSubtrees[i]
+            );
+            _index /= 2;
+        }
+        return proof;
     }
 
     /// @dev provides Zero (Empty) elements for a MiMC MerkleTree. Up to 32 levels
