@@ -2,10 +2,8 @@
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useState } from "react";
 import { useAccount } from "wagmi";
+import { DepositButton } from "./DepositButton";
 
-const DepositButton = () => {
-  return <button className="btn btn-primary w-full">Deposit</button>;
-};
 const WithdrawButton = () => {
   return <button className="btn btn-primary w-full">Withdraw</button>;
 };
