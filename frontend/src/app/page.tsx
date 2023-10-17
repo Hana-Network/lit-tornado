@@ -1,95 +1,52 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import { useState, useEffect } from "react";
+import Head from "next/head";
+import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
+import { WagmiConfig, useAccount } from "wagmi";
+import { goerli, polygonMumbai } from "wagmi/chains";
+import { Header } from "@/components/Header";
+import { Main } from "@/components/Main";
+
+const chains = [goerli, polygonMumbai];
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || "";
+
+const metadata = {
+  name: "Next Starter Template",
+  description: "A Next.js starter template with Web3Modal v3 + Wagmi",
+  url: "https://web3modal.com",
+  icons: ["https://avatars.githubusercontent.com/u/37784886"],
+};
+
+const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
+
+createWeb3Modal({
+  wagmiConfig,
+  projectId,
+  chains,
+  defaultChain: polygonMumbai,
+  themeMode: "light",
+});
 
 export default function Home() {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setReady(true);
+  }, []);
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    <div className="min-h-screen bg-base-100 flex flex-col">
+      {ready ? (
+        <WagmiConfig config={wagmiConfig}>
+          <Head>
+            <title>Tornado Cash Classic UI Replica</title>
+            <link rel="icon" href="/favicon.ico" />
+          </Head>
+          <Header />
+          <div className="flex-grow flex justify-center items-center mt-[-5rem]">
+            <Main />
+          </div>
+        </WagmiConfig>
+      ) : null}
+    </div>
   );
 }
