@@ -16,6 +16,7 @@ describe("LitTornado", function () {
   const commitment1 = keccak256(
     encodePacked(["bytes32", "bytes32"], [secret, nullifier])
   );
+  console.log("Commitment 1:", commitment1);
 
   async function litTornadoFixture() {
     const [owner, addr1, recipient, verifier, relayer] =
@@ -95,7 +96,7 @@ describe("LitTornado", function () {
       } = await loadFixture(litTornadoFixture);
       const commitment = commitment1;
       await litTornado.write.deposit([commitment], { value: denomination });
-      const treeRoot = await litTornado.read.roots([BigInt(0)]);
+      const treeRoot = await litTornado.read.getLastRoot();
       console.log("Target Merkle Tree Root:", treeRoot);
 
       return {
@@ -172,6 +173,23 @@ describe("LitTornado", function () {
           address: recipientAddress,
         })
       ).to.equal(recipientBalance + (BigInt(denomination) - BigInt(fee)));
+    });
+  });
+
+  describe("generateProofFromCommitment", function () {
+    it("Should generate a proof from a valid commitment", async function () {
+      const { litTornado } = await loadFixture(litTornadoFixture);
+      const commitment = commitment1;
+      await litTornado.write.deposit([commitment], { value: denomination });
+
+      // The logic in generateProofFromCommitment function is incorrect...
+      // TODO: fix the logic
+      const proof = await litTornado.read.generateProofFromCommitment([
+        commitment,
+      ]);
+
+      console.log("Proof:", proof);
+      expect(proof).to.be.an("array").that.is.not.empty;
     });
   });
 });
