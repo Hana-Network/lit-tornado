@@ -8,13 +8,7 @@ import {
 import { encodePacked, toHex } from "viem";
 import { keccak256 } from "viem";
 import { usePrepareLitTornadoDeposit, useLitTornadoDeposit } from "@/contracts";
-
-const generateCommitment = (
-  secret: `0x${string}`,
-  nullifier: `0x${string}`
-) => {
-  return keccak256(encodePacked(["bytes32", "bytes32"], [secret, nullifier]));
-};
+import { generateCommitment } from "@/utils";
 
 export const DepositButton = () => {
   const { config, error, isError } = usePrepareLitTornadoDeposit({
