@@ -3,6 +3,7 @@ import { expect } from "chai";
 import hre from "hardhat";
 import { keccak256, parseGwei, toHex, getContract, encodePacked } from "viem";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox-viem/network-helpers";
+import { verifyMerkleProof } from "./utils";
 
 describe("LitTornado", function () {
   const denomination = parseGwei("0.1");
@@ -182,6 +183,7 @@ describe("LitTornado", function () {
       const commitment = commitment1;
       await litTornado.write.deposit([commitment], { value: denomination });
 
+      const treeRoot = await litTornado.read.getLastRoot();
       // The logic in generateProofFromCommitment function is incorrect...
       // TODO: fix the logic
       const proof = await litTornado.read.generateProofFromCommitment([
@@ -190,6 +192,8 @@ describe("LitTornado", function () {
 
       console.log("Proof:", proof);
       expect(proof).to.be.an("array").that.is.not.empty;
+
+      // expect(verifyMerkleProof(commitment, treeRoot, pathElements, pathIndices)).to.be.true;
     });
   });
 });
