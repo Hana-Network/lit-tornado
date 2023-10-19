@@ -7,7 +7,12 @@ import {
   SAMPLE_SECRET,
 } from "@/constants";
 
-import { encodePacked, keccak256 } from "viem";
+import {
+  encodePacked,
+  keccak256,
+  parseGwei,
+  recoverMessageAddress,
+} from "viem";
 import {
   useLitTornadoWithdraw,
   useMerkleTreeWithHistoryGetLastRoot,
@@ -16,6 +21,7 @@ import {
 import { generateCommitment } from "@/utils";
 import { useAccount, useSignMessage } from "wagmi";
 import { useEffect } from "react";
+import { checkAndSignAuthMessage } from "@lit-protocol/lit-node-client";
 
 export const WithdrawButton = () => {
   const { address, isConnecting } = useAccount();
@@ -26,7 +32,7 @@ export const WithdrawButton = () => {
   } = useMerkleTreeWithHistoryGetLastRoot({
     address: MIXINER_ADDRESS,
   });
-  console.log({ data, isReadRootError, isLoading });
+  // console.log({ data, isReadRootError, isLoading });
 
   const root = data;
   const nullifierHash = keccak256(SAMPLE_NULLIFIER);
@@ -36,7 +42,9 @@ export const WithdrawButton = () => {
 
   if (!root || !nullifierHash || !recipientAddress || !relayerAddress || !fee) {
     // error
+    console.log({ data, isReadRootError, isLoading });
   }
+  // console.log({ data, isReadRootError, isLoading });
   const messageHash = keccak256(
     encodePacked(
       ["bytes32", "bytes32", "address", "address", "uint256"],
@@ -59,11 +67,13 @@ export const WithdrawButton = () => {
   useEffect(() => {
     (async () => {
       if (variables?.message && signMessageData) {
-        // const recoveredAddress = await recoverMessageAddress({
-        //   message: variables?.message,
-        //   signature: signMessageData,
-        // })
-        // setRecoveredAddress(recoveredAddress)
+        console.log({ variables, signMessageData });
+        const recoveredAddress = await recoverMessageAddress({
+          message: variables?.message,
+          signature: signMessageData,
+        });
+        // setRecoveredAddress(recoveredAddress);
+        console.log({ recoveredAddress });
       }
     })();
   }, [signMessageData, variables?.message]);
@@ -72,24 +82,67 @@ export const WithdrawButton = () => {
   //   message: { raw: messageHash },
   // });
 
-  // const { config, error, isError } = usePrepareLitTornadoWithdraw({
-  //   address: MIXINER_ADDRESS,
-  //   args: [],
-  // });
+  const enableWithdraw =
+    signMessageData &&
+    root &&
+    nullifierHash &&
+    recipientAddress &&
+    relayerAddress &&
+    fee;
+  console.log(enableWithdraw);
+  console.log({ signMessageData });
+  console.log({ root });
+  console.log({ nullifierHash });
+  console.log({ recipientAddress });
+  console.log({ relayerAddress });
+  console.log({ fee });
 
-  // const { write, status } = useLitTornadoWithdraw(config);
-  // console.log({ status });
+  const {
+    config,
+    error,
+    isError,
+    // refetch: refetchWithdraw,
+  } = usePrepareLitTornadoWithdraw({
+    address: MIXINER_ADDRESS,
+    args: [
+      signMessageData,
+      root,
+      nullifierHash,
+      recipientAddress,
+      relayerAddress,
+      fee,
+    ],
+    enabled: Boolean(enableWithdraw),
+  });
+
+  const { write, status, data: dataWithdraw } = useLitTornadoWithdraw(config);
+
+  console.log({ status });
+  console.log({ dataWithdraw });
 
   return (
-    <button
-      className="btn btn-primary w-full"
-      disabled={true}
-      // https://github.com/wagmi-dev/wagmi/pull/2719
-      onClick={() => {
-        (signMessage as any)({ message: { raw: messageHash } });
-      }}
-    >
-      Withdraw
-    </button>
+    <>
+      <button
+        className="btn btn-primary w-full"
+        disabled={false}
+        // https://github.com/wagmi-dev/wagmi/pull/2719
+        onClick={() => {
+          (signMessage as any)({ message: { raw: messageHash } });
+        }}
+      >
+        Withdraw
+      </button>
+      <button
+        className="btn btn-primary w-full"
+        disabled={false}
+        // https://github.com/wagmi-dev/wagmi/pull/2719
+        onClick={() => {
+          console.log(write);
+          write?.();
+        }}
+      >
+        Withdraw
+      </button>
+    </>
   );
 };
