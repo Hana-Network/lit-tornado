@@ -13,6 +13,7 @@
     "@nomicfoundation/hardhat-toolbox-viem": "^1.0.0",
     "@openzeppelin/contracts": "^4.9.3",
     "@wagmi/cli": "^1.5.2",
+    "ethers": "^6.8.0",
     "hardhat": "^2.18.1"
   }
 }

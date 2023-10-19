@@ -4,6 +4,7 @@ pragma solidity ^0.8.9;
 import "./MerkleTreeWithHistory.sol";
 import "../node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import {ECDSA} from "../node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import {Strings} from "../node_modules/@openzeppelin/contracts/utils/Strings.sol";
 
 contract LitTornado is MerkleTreeWithHistory, ReentrancyGuard {
     address public verifier;
@@ -66,6 +67,7 @@ contract LitTornado is MerkleTreeWithHistory, ReentrancyGuard {
         return generateProof(leaf, _index);
     }
 
+    /*
     function splitSignature(
         bytes memory signature
     ) private pure returns (uint8 v, bytes32 r, bytes32 s) {
@@ -92,17 +94,14 @@ contract LitTornado is MerkleTreeWithHistory, ReentrancyGuard {
 
         return ecrecover(ethSignedMessageHash, v, r, s);
     }
-
+*/
     function verifyMessage(
         bytes32 messageHash,
         bytes memory signature,
         address expectedSigner
     ) private pure returns (bool) {
         (address recoveredAddress, ) = ECDSA.tryRecover(messageHash, signature);
-        // In some ceses, the returned address is not the same... I don't know why.
-        if (recoveredAddress != expectedSigner) {
-            recoveredAddress = recoverSigner(messageHash, signature);
-        }
+        // recoveredAddress = recoverSigner(messageHash, signature);
         return recoveredAddress == expectedSigner;
     }
 
@@ -118,8 +117,10 @@ contract LitTornado is MerkleTreeWithHistory, ReentrancyGuard {
         bytes32 messageHash = keccak256(
             abi.encodePacked(root, nullifierHash, recipient, relayer, fee)
         );
-
+        // bytes32 digest = ECDSA.toEthSignedMessageHash(messageHash);
         (address recoveredAddress, ) = ECDSA.tryRecover(messageHash, signature);
+        // address recoveredAddress = ECDSA.recover(digest, signature);
+        // address recoveredAddress = recoverSigner(messageHash, signature);
         return recoveredAddress;
     }
 
@@ -134,7 +135,16 @@ contract LitTornado is MerkleTreeWithHistory, ReentrancyGuard {
             abi.encodePacked(root, nullifierHash, recipient, relayer, fee)
         );
 
-        return messageHash;
+        // bytes32 digest = ECDSA.toEthSignedMessageHash(messageHash);
+        return
+            keccak256(
+                abi.encodePacked(
+                    "\x19Ethereum Signed Message:\n",
+                    Strings.toString(messageHash.length),
+                    messageHash
+                )
+            );
+        // return digest;
     }
 
     /** @dev Withdraw a deposit from the contract. `proof` is a signature verified by Lit PKP. */

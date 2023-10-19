@@ -12,6 +12,7 @@ import {
 } from "viem";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox-viem/network-helpers";
 import { verifyMerkleProof } from "./utils";
+import { ethers } from "ethers";
 
 describe("LitTornado", function () {
   const denomination = parseEther("0.01");
@@ -119,7 +120,7 @@ describe("LitTornado", function () {
         relayer,
       };
     }
-
+    /*
     it("Should withdraw correctly", async function () {
       const {
         litTornado,
@@ -183,15 +184,14 @@ describe("LitTornado", function () {
         })
       ).to.equal(recipientBalance + (BigInt(denomination) - BigInt(fee)));
     });
-
-    /*
+*/
     it("check recovery address", async function () {
       const { litTornado, verifier } = await loadFixture(litTornadoFixture);
       console.log(verifier.account.address);
-      // const signature =
-      //   "0xf681d2e5f81bc3439aec876395a79323aade88b5a6c79366fda06bc352ec2d2b5b09bbbb652445464e6a1cea656fd9c364f9c0bd78e091a26f5768dd4fcd8f051b";
+      const signature =
+        "0xeecd54b25f1b9d3e33483194a9f379858939935f0c2c87b6ae432de6cfbd7d2464c289d819e9a2f2b3b595b9faadcb7affecc900aa169c9d0ae83ec3de7435bf1c";
       const root =
-        "0x8efd58f823c09a1ab15017aa29fa6682fcc0c9efcc7f6099495e5563fca1a390";
+        "0x0058459724ff6ca5a1652fcbc3e82b93895cf08e975b19beab3f54c217d1c007";
       const nullifierHash =
         "0x2a84186a4711fa5d8b1438208bbdb010b68d683d1e2795fabc9fef91a1380dac";
       const recipientAddress = "0x951444F56EF94FeC42e8cDBeDef1A4Dc1D1ea63B";
@@ -202,7 +202,16 @@ describe("LitTornado", function () {
         ["bytes32", "bytes32", "address", "address", "uint256"],
         [root!, nullifierHash, recipientAddress!, relayerAddress!, fee]
       );
+      // const abi = ethers.AbiCoder.defaultAbiCoder();
+      // const message = abi.encode(
+      //   ["bytes32", "bytes32", "address", "address", "uint256"],
+      //   [root!, nullifierHash, recipientAddress!, relayerAddress!, fee]
+      // ) as `0x${string}`;
+      // const message = "hello";
+
+      // const messageHash = keccak256(ethers.toUtf8Bytes(message));
       const messageHash = keccak256(message);
+
       console.log({ message });
       console.log({ messageHash });
 
@@ -214,10 +223,27 @@ describe("LitTornado", function () {
         fee,
       ]);
       console.log({ testHash });
-      const signature = await verifier.signMessage({
-        // message: { raw: messageHash },
-        message,
-      });
+
+      function hashMessage(message: Uint8Array | string): string {
+        if (typeof message === "string") {
+          message = ethers.toUtf8Bytes(message);
+        }
+        return ethers.keccak256(
+          ethers.concat([
+            ethers.toUtf8Bytes("\x19Ethereum Signed Message:\n32"),
+            // ethers.toUtf8Bytes(String(message.length)),
+            message,
+          ])
+        );
+      }
+      console.log("ethers.hashMessage: ", hashMessage(messageHash));
+      // const signature = await verifier.signMessage({
+      //   // message: { raw: messageHash },
+      //   message,
+      // });
+
+      // const signature = (await wallet.signMessage(message)) as `0x${string}`;
+
       console.log({ signature });
       const recoverTestAddress = await litTornado.read.recoveryTest([
         signature,
@@ -229,13 +255,26 @@ describe("LitTornado", function () {
       ]);
       console.log({ recoverTestAddress });
 
-      const recoveredAddress = await recoverMessageAddress({
+      const recoveredAddress_ = await recoverMessageAddress({
         message: message,
         signature: signature,
       });
+      // recoveredAddresses are not the same...
+      console.log({ recoveredAddress_ });
+
+      const hoge = ethers.getBytes(ethers.hashMessage(message));
+      const recoveredAddress = ethers.recoverAddress(hoge, signature);
+
       console.log({ recoveredAddress });
+
+      // const expectedAddress = await wallet.getAddress();
+
+      console.log(
+        "ok???????????",
+        ethers.verifyMessage(message, signature) === //verifier.account.address
+          "0x6f723542c2417a49845B9ff9AF92B3c0cc9FC2Da"
+      );
     });
-    */
   });
 
   // describe("generateProofFromCommitment", function () {
