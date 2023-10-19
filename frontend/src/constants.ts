@@ -1,6 +1,6 @@
 import { parseEther } from "viem";
 
-export const MIXINER_ADDRESS = "0xec3a882a8f786a34fd305a2c9b3a45b0c78e4a91"; // "0x30bb56f4eeb0cf40529527ecdfe576b904392bdb";
+export const MIXINER_ADDRESS = "0xb0d829de1848581ed84402fc4e1205c12b9fe190"; // "0xec3a882a8f786a34fd305a2c9b3a45b0c78e4a91";
 export const DENOMINATION = parseEther("0.1");
 export const RELAYER_FEE = parseEther("0.01");
 export const SAMPLE_SECRET =
@@ -18,12 +18,12 @@ const SAMPLE_NULLIFIERS = [
   "0x9cd3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3",
   "0xad4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9a0b1c2d3e4f5",
 ] as `0x${string}`[];
-export const SAMPLE_NULLIFIER = SAMPLE_NULLIFIERS[3];
+export const SAMPLE_NULLIFIER = SAMPLE_NULLIFIERS[4];
 
 export const PKP_NFT_ADDRESS = "0x8F75a53F65e31DD0D2e40d0827becAaE2299D111";
 export const PKP_HELPER_ADDRESS = "0x8bB62077437D918891F12c7F35d9e1B78468bF11";
-export const VERIFIER_IPFS_CID =
-  "QmQ5yzoCvYcdW6kBqUnFXx6ZNJzQRAsthDvthutwoPggrL";
+export const VERIFIER_IPFS_CID = "0xec3a882a8f786a34fd305a2c9b3a45b0c78e4a91";
+("QmQ5yzoCvYcdW6kBqUnFXx6ZNJzQRAsthDvthutwoPggrL");
 export const VERIFIER_PKP_ADDRESS =
   "0x6f723542c2417a49845B9ff9AF92B3c0cc9FC2Da";
 

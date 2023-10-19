@@ -3,6 +3,7 @@ pragma solidity ^0.8.9;
 
 import "./MerkleTreeWithHistory.sol";
 import "../node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import {ECDSA} from "../node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract LitTornado is MerkleTreeWithHistory, ReentrancyGuard {
     address public verifier;
@@ -97,7 +98,43 @@ contract LitTornado is MerkleTreeWithHistory, ReentrancyGuard {
         bytes memory signature,
         address expectedSigner
     ) private pure returns (bool) {
-        return recoverSigner(messageHash, signature) == expectedSigner;
+        (address recoveredAddress, ) = ECDSA.tryRecover(messageHash, signature);
+        // In some ceses, the returned address is not the same... I don't know why.
+        if (recoveredAddress != expectedSigner) {
+            recoveredAddress = recoverSigner(messageHash, signature);
+        }
+        return recoveredAddress == expectedSigner;
+    }
+
+    // for testing purpose
+    function recoveryTest(
+        bytes memory signature,
+        bytes32 root,
+        bytes32 nullifierHash,
+        address payable recipient,
+        address payable relayer,
+        uint256 fee
+    ) external pure returns (address) {
+        bytes32 messageHash = keccak256(
+            abi.encodePacked(root, nullifierHash, recipient, relayer, fee)
+        );
+
+        (address recoveredAddress, ) = ECDSA.tryRecover(messageHash, signature);
+        return recoveredAddress;
+    }
+
+    function hashTest(
+        bytes32 root,
+        bytes32 nullifierHash,
+        address payable recipient,
+        address payable relayer,
+        uint256 fee
+    ) external pure returns (bytes32) {
+        bytes32 messageHash = keccak256(
+            abi.encodePacked(root, nullifierHash, recipient, relayer, fee)
+        );
+
+        return messageHash;
     }
 
     /** @dev Withdraw a deposit from the contract. `proof` is a signature verified by Lit PKP. */

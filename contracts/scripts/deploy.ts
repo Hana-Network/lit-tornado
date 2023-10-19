@@ -15,6 +15,7 @@ async function main() {
 
   // 0xec3a882a8f786a34fd305a2c9b3a45b0c78e4a91
   // 0x30bb56f4eeb0cf40529527ecdfe576b904392bdb
+  // 0xb0d829de1848581ed84402fc4e1205c12b9fe190
   console.log("LitTornado deployed to:", litTornado.address);
 }
 

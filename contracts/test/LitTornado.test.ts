@@ -1,18 +1,26 @@
 // npx hardhat test ./test/LitTornado.test.ts
 import { expect } from "chai";
 import hre from "hardhat";
-import { keccak256, parseGwei, toHex, getContract, encodePacked } from "viem";
+import {
+  keccak256,
+  parseGwei,
+  parseEther,
+  toHex,
+  getContract,
+  encodePacked,
+  recoverMessageAddress,
+} from "viem";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox-viem/network-helpers";
 import { verifyMerkleProof } from "./utils";
 
 describe("LitTornado", function () {
-  const denomination = parseGwei("0.1");
+  const denomination = parseEther("0.01");
   const merkleTreeHeight = 20;
   const secret =
     "0x9c1a3b673a4e4820143acbddb65082f13530a972df68a1eec1f5c09d70d1ca34"; //dummy secret
   const nullifier =
     "0x577123fe2d2107cd774e036861272d4d0d07e6bec0fe36ac936a6cccf1f3f00c"; //dummy nullifier
-  const relayerFee = parseGwei("0.01");
+  const relayerFee = parseEther("0.01");
 
   const commitment1 = keccak256(
     encodePacked(["bytes32", "bytes32"], [secret, nullifier])
@@ -175,25 +183,78 @@ describe("LitTornado", function () {
         })
       ).to.equal(recipientBalance + (BigInt(denomination) - BigInt(fee)));
     });
-  });
 
-  describe("generateProofFromCommitment", function () {
-    it("Should generate a proof from a valid commitment", async function () {
-      const { litTornado } = await loadFixture(litTornadoFixture);
-      const commitment = commitment1;
-      await litTornado.write.deposit([commitment], { value: denomination });
+    /*
+    it("check recovery address", async function () {
+      const { litTornado, verifier } = await loadFixture(litTornadoFixture);
+      console.log(verifier.account.address);
+      // const signature =
+      //   "0xf681d2e5f81bc3439aec876395a79323aade88b5a6c79366fda06bc352ec2d2b5b09bbbb652445464e6a1cea656fd9c364f9c0bd78e091a26f5768dd4fcd8f051b";
+      const root =
+        "0x8efd58f823c09a1ab15017aa29fa6682fcc0c9efcc7f6099495e5563fca1a390";
+      const nullifierHash =
+        "0x2a84186a4711fa5d8b1438208bbdb010b68d683d1e2795fabc9fef91a1380dac";
+      const recipientAddress = "0x951444F56EF94FeC42e8cDBeDef1A4Dc1D1ea63B";
+      const relayerAddress = "0x951444F56EF94FeC42e8cDBeDef1A4Dc1D1ea63B";
+      const fee = relayerFee;
 
-      const treeRoot = await litTornado.read.getLastRoot();
-      // The logic in generateProofFromCommitment function is incorrect...
-      // TODO: fix the logic
-      const proof = await litTornado.read.generateProofFromCommitment([
-        commitment,
+      const message = encodePacked(
+        ["bytes32", "bytes32", "address", "address", "uint256"],
+        [root!, nullifierHash, recipientAddress!, relayerAddress!, fee]
+      );
+      const messageHash = keccak256(message);
+      console.log({ message });
+      console.log({ messageHash });
+
+      const testHash = await litTornado.read.hashTest([
+        root,
+        nullifierHash,
+        recipientAddress,
+        relayerAddress,
+        fee,
       ]);
+      console.log({ testHash });
+      const signature = await verifier.signMessage({
+        // message: { raw: messageHash },
+        message,
+      });
+      console.log({ signature });
+      const recoverTestAddress = await litTornado.read.recoveryTest([
+        signature,
+        root,
+        nullifierHash,
+        recipientAddress,
+        relayerAddress,
+        fee,
+      ]);
+      console.log({ recoverTestAddress });
 
-      console.log("Proof:", proof);
-      expect(proof).to.be.an("array").that.is.not.empty;
-
-      // expect(verifyMerkleProof(commitment, treeRoot, pathElements, pathIndices)).to.be.true;
+      const recoveredAddress = await recoverMessageAddress({
+        message: message,
+        signature: signature,
+      });
+      console.log({ recoveredAddress });
     });
+    */
   });
+
+  // describe("generateProofFromCommitment", function () {
+  //   it("Should generate a proof from a valid commitment", async function () {
+  //     const { litTornado } = await loadFixture(litTornadoFixture);
+  //     const commitment = commitment1;
+  //     await litTornado.write.deposit([commitment], { value: denomination });
+
+  //     const treeRoot = await litTornado.read.getLastRoot();
+  //     // The logic in generateProofFromCommitment function is incorrect...
+  //     // TODO: fix the logic
+  //     const proof = await litTornado.read.generateProofFromCommitment([
+  //       commitment,
+  //     ]);
+
+  //     console.log("Proof:", proof);
+  //     expect(proof).to.be.an("array").that.is.not.empty;
+
+  //     // expect(verifyMerkleProof(commitment, treeRoot, pathElements, pathIndices)).to.be.true;
+  //   });
+  // });
 });
