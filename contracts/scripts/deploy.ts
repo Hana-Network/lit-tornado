@@ -2,7 +2,7 @@
 import { parseEther } from "viem";
 import hre from "hardhat";
 
-const VERIFIER_ADDRESS = "0x951444F56EF94FeC42e8cDBeDef1A4Dc1D1ea63B";
+const VERIFIER_ADDRESS = "0x6f723542c2417a49845B9ff9AF92B3c0cc9FC2Da";
 const DENOMINATION = parseEther("0.1");
 const TREE_HEIGHT = 10;
 
@@ -14,6 +14,7 @@ async function main() {
   ]);
 
   // 0xec3a882a8f786a34fd305a2c9b3a45b0c78e4a91
+  // 0x30bb56f4eeb0cf40529527ecdfe576b904392bdb
   console.log("LitTornado deployed to:", litTornado.address);
 }
 
