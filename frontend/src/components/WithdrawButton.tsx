@@ -162,7 +162,7 @@ export const WithdrawButton = () => {
       >
         Withdraw
       </button>
-      <button
+      {/* <button
         className="btn btn-primary w-full"
         disabled={false}
         // https://github.com/wagmi-dev/wagmi/pull/2719
@@ -172,7 +172,7 @@ export const WithdrawButton = () => {
         }}
       >
         Withdraw
-      </button>
+      </button> */}
     </>
   );
 };
