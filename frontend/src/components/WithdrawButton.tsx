@@ -18,7 +18,6 @@ import { generateCommitment } from "@/utils";
 import { useAccount, useSignMessage } from "wagmi";
 import { useEffect, useState } from "react";
 import { checkAndSignAuthMessage } from "@lit-protocol/lit-node-client";
-import { ethers } from "ethers";
 
 // const litActionCode = `
 // // const go = async () => {

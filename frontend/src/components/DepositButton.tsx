@@ -5,8 +5,6 @@ import {
   SAMPLE_NULLIFIER,
   SAMPLE_SECRET,
 } from "@/constants";
-import { encodePacked, toHex } from "viem";
-import { keccak256 } from "viem";
 import { usePrepareLitTornadoDeposit, useLitTornadoDeposit } from "@/contracts";
 import { generateCommitment } from "@/utils";
 
