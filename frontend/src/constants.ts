@@ -1,6 +1,6 @@
 import { parseEther } from "viem";
 
-export const MIXINER_ADDRESS = "0x75fc58514cf666640a3f5ca7d8e2f8c0fe262f86";
+export const MIXINER_ADDRESS = "0x2897217b19b1aa6a7f7579dc4e29218318272b06";
 export const DENOMINATION = parseEther("0.1");
 export const RELAYER_FEE = parseEther("0.01");
 export const RELAYER_ADDRESS = "0x951444F56EF94FeC42e8cDBeDef1A4Dc1D1ea63B";
@@ -27,6 +27,8 @@ export const VERIFIER_IPFS_CID = "0xec3a882a8f786a34fd305a2c9b3a45b0c78e4a91";
 ("QmQ5yzoCvYcdW6kBqUnFXx6ZNJzQRAsthDvthutwoPggrL");
 export const VERIFIER_PKP_ADDRESS =
   "0x6f723542c2417a49845B9ff9AF92B3c0cc9FC2Da";
+
+export const TREE_HEIGHT = 10;
 
 export enum AuthMethodType {
   EthWallet = 1,
