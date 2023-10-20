@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
+// import "hardhat/console.sol";
+
 contract MerkleTreeWithHistory {
     uint32 public levels;
-
     mapping(uint256 => bytes32) public filledSubtrees;
     mapping(uint256 => bytes32) public roots;
     uint32 public constant ROOT_HISTORY_SIZE = 30;
@@ -12,33 +13,56 @@ contract MerkleTreeWithHistory {
     // for simplisity
     uint32 public constant TREE_HEIGHT = 10;
     bytes32[2 ** TREE_HEIGHT] public leaves;
+    bytes32[2 ** TREE_HEIGHT] public zeros;
 
-    constructor(uint32 _levels) {
+    constructor() {
         // require(_levels > 0, "_levels should be greater than zero");
         // require(_levels < 32, "_levels should be less than 32");
         // levels = _levels;
         levels = TREE_HEIGHT;
 
-        // for simplisity
-        for (uint32 i = 0; i < _levels; i++) {
-            filledSubtrees[i] = 0;
-        }
+        // for (uint32 i = 0; i < levels; i++) {
+        //     filledSubtrees[i] = zeros(i);
+        // }
 
-        roots[0] = 0;
+        // roots[0] = zeros(levels - 1);
+
+        // initialize filledSubtrees
+        bytes32 leaf = 0x00;
+        filledSubtrees[0] = leaf;
+
+        // Calculate the root of the subtree for each level
+        for (uint32 i = 1; i < TREE_HEIGHT; i++) {
+            bytes32 subtreeRoot = hashLeftRight(
+                filledSubtrees[i - 1],
+                filledSubtrees[i - 1]
+            );
+            filledSubtrees[i] = subtreeRoot;
+            zeros[i] = subtreeRoot;
+        }
+        // is this right?
+        roots[0] = filledSubtrees[TREE_HEIGHT - 1];
+    }
+
+    function initializeFilledSubtrees() public {
+        // Leaf nodes
+        bytes32 leaf = 0x00;
+        filledSubtrees[0] = leaf;
+
+        // Calculate the root of the subtree for each level
+        for (uint32 i = 1; i < TREE_HEIGHT; i++) {
+            bytes32 subtreeRoot = hashLeftRight(
+                filledSubtrees[i - 1],
+                filledSubtrees[i - 1]
+            );
+            filledSubtrees[i] = subtreeRoot;
+        }
     }
 
     function hashLeftRight(
         bytes32 _left,
         bytes32 _right
     ) public pure returns (bytes32) {
-        // require(
-        //     uint256(_left) < FIELD_SIZE,
-        //     "_left should be inside the field"
-        // );
-        // require(
-        //     uint256(_right) < FIELD_SIZE,
-        //     "_right should be inside the field"
-        // );
         return keccak256(abi.encodePacked(_left, _right));
     }
 
@@ -59,13 +83,14 @@ contract MerkleTreeWithHistory {
         for (uint32 i = 0; i < levels; i++) {
             if (currentIndex % 2 == 0) {
                 left = currentLevelHash;
-                // right = zeros(i);
+                right = zeros[i];
                 filledSubtrees[i] = currentLevelHash;
             } else {
                 left = filledSubtrees[i];
                 right = currentLevelHash;
             }
             currentLevelHash = hashLeftRight(left, right);
+            // console.logBytes32(currentLevelHash);
             currentIndex /= 2;
         }
 
@@ -146,7 +171,7 @@ contract MerkleTreeWithHistory {
         return result;
     }
 
-    /* for simplisity
+    /*
     /// @dev provides Zero (Empty) elements for a MiMC MerkleTree. Up to 32 levels
     function zeros(uint256 i) public pure returns (bytes32) {
         if (i == 0)

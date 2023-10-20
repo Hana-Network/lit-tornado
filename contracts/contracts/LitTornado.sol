@@ -30,13 +30,11 @@ contract LitTornado is MerkleTreeWithHistory, ReentrancyGuard {
      * @dev Constructor
      * @param _verifier Address of the Lit PKP
      * @param _denomination transfer amount for each deposit
-     * @param _merkleTreeHeight the height of deposits' Merkle Tree
      */
     constructor(
         address _verifier,
-        uint256 _denomination,
-        uint32 _merkleTreeHeight
-    ) MerkleTreeWithHistory(_merkleTreeHeight) {
+        uint256 _denomination
+    ) MerkleTreeWithHistory() {
         require(_denomination > 0, "denomination should be greater than 0");
         verifier = _verifier;
         denomination = _denomination;

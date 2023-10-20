@@ -15,5 +15,8 @@
     "@wagmi/cli": "^1.5.2",
     "ethers": "^6.8.0",
     "hardhat": "^2.18.1"
+  },
+  "dependencies": {
+    "merkletreejs": "^0.3.10"
   }
 }

@@ -17,6 +17,7 @@ import {
   verifyMerkleProof,
 } from "./utils";
 import { ethers } from "ethers";
+import { MerkleTree } from "merkletreejs";
 
 describe("LitTornado", function () {
   const denomination = parseEther("0.01");
@@ -41,7 +42,7 @@ describe("LitTornado", function () {
     const litTornadoContract = await hre.viem.deployContract("LitTornado", [
       verifier.account.address,
       denomination,
-      merkleTreeHeight,
+      // merkleTreeHeight,
     ]);
 
     const litTornado = getContract({
@@ -292,6 +293,38 @@ describe("LitTornado", function () {
       expect(leaves.length).to.equal(2 ** merkleTreeHeight);
       expect(leaves[0]).to.equal(commitment);
       expect(BigInt(leaves[1])).to.equal(BigInt(0));
+    });
+
+    it("merkle proof verification", async function () {
+      const { litTornado } = await loadFixture(litTornadoFixture);
+      const commitment = commitment1;
+
+      await litTornado.write.deposit([commitment], { value: denomination });
+      const commitment2 = generateCommitment(
+        generateRandom32BytesHex(),
+        generateRandom32BytesHex()
+      );
+      await litTornado.write.deposit([commitment2], { value: denomination });
+
+      const commitment3 = generateCommitment(
+        generateRandom32BytesHex(),
+        generateRandom32BytesHex()
+      );
+      await litTornado.write.deposit([commitment3], { value: denomination });
+
+      const leaves = await litTornado.read.getLeaves();
+      const treeRoot = await litTornado.read.getLastRoot();
+
+      const tree = new MerkleTree([...leaves], keccak256, { sort: false });
+      const root = tree.getHexRoot() as `0x${string}`;
+      const proof = tree.getHexProof(commitment) as `0x${string}`[];
+      // console.log(proof);
+      const leafIndex = leaves.indexOf(commitment);
+      expect(root).to.equal(treeRoot);
+
+      expect(
+        verifyMerkleProof(commitment, root, proof, leafIndex, merkleTreeHeight)
+      ).to.equal(true);
     });
   });
 
