@@ -6,6 +6,7 @@ import { WagmiConfig, useAccount } from "wagmi";
 import { goerli, polygonMumbai } from "wagmi/chains";
 import { Header } from "@/components/Header";
 import { Main } from "@/components/Main";
+import { Toaster } from "react-hot-toast";
 
 const chains = [goerli, polygonMumbai];
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || "";
@@ -35,6 +36,7 @@ export default function Home() {
   }, []);
   return (
     <div className="min-h-screen bg-base-100 flex flex-col">
+      <Toaster position="top-right" />
       {ready ? (
         <WagmiConfig config={wagmiConfig}>
           <Head>
