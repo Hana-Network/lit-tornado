@@ -22,12 +22,6 @@
 //   testnet: true,
 // });
 
-// const litActionCode = `
-// // const go = async () => {
-// //   const sigShare = await LitActions.ethPersonalSignMessageEcdsa({ message, publicKey , sigName });
-// // };
-// // go();
-// `;
 export const PROOF_LIT_ACTION_CODE = `
 (() => {
   var __async = (__this, __arguments, generator) => {
@@ -73,11 +67,30 @@ export const PROOF_LIT_ACTION_CODE = `
     }
     return computedHash === root;
   }
+  function circuit(privateInputs2, publicInputs2) {
+    const { secret, nullifier, merkleProof, leafIndex } = privateInputs2;
+    const { treeRoot, nullifierHash, merkleTreeHeight } = publicInputs2;
+    const commitment = hashLeftRight(secret, nullifier);
+    if (nullifierHash !== publicInputs2.nullifierHash) {
+      console.log("Invalid nullifier hash");
+      return false;
+    }
+    return verifyMerkleProof(
+      commitment,
+      treeRoot,
+      merkleProof,
+      leafIndex,
+      merkleTreeHeight
+    );
+  }
   var generateProofSignature = () => __async(void 0, null, function* () {
-    const { commitment, root, proof, leafIndex, merkleTreeHeight } = data;
-    if (verifyMerkleProof(commitment, root, proof, leafIndex, merkleTreeHeight)) {
+    if (circuit(privateInputs, publicInputs)) {
       console.log("Proof verified");
-      const sigShare = yield LitActions.signEcdsa({ toSign, publicKey, sigName });
+      const sigShare = yield LitActions.signEcdsa({
+        toSign,
+        publicKey,
+        sigName
+      });
     } else {
       console.error("Proof not verified");
     }

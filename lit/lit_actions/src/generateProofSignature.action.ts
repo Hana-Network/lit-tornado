@@ -41,12 +41,33 @@ export function verifyMerkleProof(
   return computedHash === root;
 }
 
-const generateProofSignature = async () => {
-  const { commitment, root, proof, leafIndex, merkleTreeHeight } = data;
+function circuit(privateInputs, publicInputs) {
+  const { secret, nullifier, merkleProof, leafIndex } = privateInputs;
+  const { treeRoot, nullifierHash, merkleTreeHeight } = publicInputs;
 
-  if (verifyMerkleProof(commitment, root, proof, leafIndex, merkleTreeHeight)) {
+  const commitment = hashLeftRight(secret, nullifier);
+
+  if (nullifierHash !== publicInputs.nullifierHash) {
+    console.log("Invalid nullifier hash");
+    return false;
+  }
+  return verifyMerkleProof(
+    commitment,
+    treeRoot,
+    merkleProof,
+    leafIndex,
+    merkleTreeHeight
+  );
+}
+
+const generateProofSignature = async () => {
+  if (circuit(privateInputs, publicInputs)) {
     console.log("Proof verified");
-    const sigShare = await LitActions.signEcdsa({ toSign, publicKey, sigName });
+    const sigShare = await LitActions.signEcdsa({
+      toSign,
+      publicKey,
+      sigName,
+    });
   } else {
     console.error("Proof not verified");
   }
