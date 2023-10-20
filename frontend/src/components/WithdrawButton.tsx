@@ -1,11 +1,5 @@
 "use client";
-import {
-  DENOMINATION,
-  MIXINER_ADDRESS,
-  RELAYER_FEE,
-  SAMPLE_NULLIFIER,
-  SAMPLE_SECRET,
-} from "@/constants";
+import { MIXINER_ADDRESS, RELAYER_FEE, SAMPLE_NULLIFIER } from "@/constants";
 
 import {
   encodePacked,
@@ -24,12 +18,13 @@ import { generateCommitment } from "@/utils";
 import { useAccount, useSignMessage } from "wagmi";
 import { useEffect, useState } from "react";
 import { checkAndSignAuthMessage } from "@lit-protocol/lit-node-client";
+import { ethers } from "ethers";
 
 // const litActionCode = `
-// const go = async () => {
-//   const sigShare = await LitActions.ethPersonalSignMessageEcdsa({ message, publicKey , sigName });
-// };
-// go();
+// // const go = async () => {
+// //   const sigShare = await LitActions.ethPersonalSignMessageEcdsa({ message, publicKey , sigName });
+// // };
+// // go();
 // `;
 const litActionCode = `
 const go = async () => {
@@ -48,12 +43,11 @@ export const WithdrawButton = () => {
   } = useMerkleTreeWithHistoryGetLastRoot({
     address: MIXINER_ADDRESS,
   });
-  // console.log({ data, isReadRootError, isLoading });
 
-  const { data: verifierData } = useLitTornadoVerifier({
-    address: MIXINER_ADDRESS,
-  });
-  console.log({ verifierData });
+  // const { data: verifierData } = useLitTornadoVerifier({
+  //   address: MIXINER_ADDRESS,
+  // });
+
   const root = data;
   const nullifierHash = keccak256(SAMPLE_NULLIFIER);
   const recipientAddress = address;
@@ -61,51 +55,10 @@ export const WithdrawButton = () => {
   const fee = RELAYER_FEE;
 
   if (!root || !nullifierHash || !recipientAddress || !relayerAddress || !fee) {
-    // error
     console.log({ data, isReadRootError, isLoading });
   }
 
-  const message = encodePacked(
-    ["bytes32", "bytes32", "address", "address", "uint256"],
-    [root!, nullifierHash, recipientAddress!, relayerAddress!, fee]
-  );
-
-  const messageHash = keccak256(message);
-  // console.log({ data, isReadRootError, isLoading });
-  // const messageHash = keccak256(
-  //   encodePacked(
-  //     ["bytes32", "bytes32", "address", "address", "uint256"],
-  //     [root!, nullifierHash, recipientAddress!, relayerAddress!, fee]
-  //   )
-  // );
-
-  const {
-    data: signMessageData,
-    error: signMessageError,
-    isLoading: isSignMessageLoading,
-    signMessage,
-    variables,
-  } = useSignMessage();
-
-  useEffect(() => {
-    (async () => {
-      if (variables?.message && signMessageData) {
-        console.log({ variables, signMessageData });
-        const recoveredAddress = await recoverMessageAddress({
-          message: variables?.message,
-          signature: signMessageData,
-        });
-        // setRecoveredAddress(recoveredAddress);
-        console.log({ recoveredAddress });
-      }
-    })();
-  }, [signMessageData, variables?.message]);
-
-  // const signature = await verifier.signMessage({
-  //   message: { raw: messageHash },
-  // });
-
-  // const [signMessageData, setSignMessageData] = useState<`0x${string}`>();
+  const [signMessageData, setSignMessageData] = useState<`0x${string}`>();
   const enableWithdraw =
     signMessageData &&
     root &&
@@ -113,13 +66,13 @@ export const WithdrawButton = () => {
     recipientAddress &&
     relayerAddress &&
     fee;
-  console.log(enableWithdraw);
-  console.log({ signMessageData });
-  console.log({ root });
-  console.log({ nullifierHash });
-  console.log({ recipientAddress });
-  console.log({ relayerAddress });
-  console.log({ fee });
+  // console.log(enableWithdraw);
+  // console.log({ signMessageData });
+  // console.log({ root });
+  // console.log({ nullifierHash });
+  // console.log({ recipientAddress });
+  // console.log({ relayerAddress });
+  // console.log({ fee });
 
   const {
     config,
@@ -141,10 +94,6 @@ export const WithdrawButton = () => {
 
   const { write, status, data: dataWithdraw } = useLitTornadoWithdraw(config);
 
-  console.log({ status });
-  console.log({ dataWithdraw });
-
-  /*
   const signMessageByPkp = async () => {
     const litNodeClient = new LitNodeClient({
       litNetwork: "serrano",
@@ -176,33 +125,31 @@ export const WithdrawButton = () => {
     );
 
     const messageHash = keccak256(message);
-    const prefixedMessage = `\u0019Ethereum Signed Message:\n${message.length}${message}`;
-    const hash = keccak256(Buffer.from(prefixedMessage, "utf-8"));
-    // console.log("message", message);
+
     const { signatures } = await litNodeClient.executeJs({
-      // ipfsId: "QmQ5yzoCvYcdW6kBqUnFXx6ZNJzQRAsthDvthutwoPggrL",
+      // ipfsId: "Qmf6oYS7nNPV8ZGTk8KdifbPQCa61GwjaMJqXDGac3pnnN",
       authSig,
       code: litActionCode,
       jsParams: {
         publicKey:
           "0x042034f83acf8e7c97118b0499073e964a93b69b5e1ad94c3627fd8665c4affb2086c59b729ac62a3fa77143a7006fd2f0e2b7e3d7253479346ba4583076f22a51",
         sigName: "sig1",
-        // message,
-        toSign: toBytes(hash),
+        // message: message,
+        toSign: toBytes(messageHash),
       },
     });
     const sig = signatures.sig1;
-    console.log("signature", sig.signature);
-    setSignMessageData(sig.signature);
 
-    const recoveredAddress = await recoverMessageAddress({
-      message: message,
-      signature: sig.signature,
-    });
-    //       // setRecoveredAddress(recoveredAddress);
-    console.log({ recoveredAddress });
+    setSignMessageData(sig.signature);
   };
-  */
+
+  useEffect(() => {
+    if (signMessageData) {
+      console.log("withdraw");
+      write?.();
+    }
+  }, [signMessageData]);
+
   return (
     <>
       <button
@@ -210,8 +157,8 @@ export const WithdrawButton = () => {
         disabled={false}
         // https://github.com/wagmi-dev/wagmi/pull/2719
         onClick={() => {
-          (signMessage as any)({ message: { raw: messageHash } });
-          // signMessageByPkp();
+          // (signMessage as any)({ message: { raw: messageHash } });
+          signMessageByPkp();
         }}
       >
         Withdraw
