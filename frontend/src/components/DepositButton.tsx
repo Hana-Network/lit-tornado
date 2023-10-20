@@ -25,8 +25,8 @@ export const DepositButton = ({
   });
 
   const { data, write, status } = useLitTornadoDeposit(config);
-  console.log({ status });
-  console.log({ data });
+  // console.log({ status });
+  // console.log({ data });
 
   const {
     data: txReceipt,
@@ -36,7 +36,7 @@ export const DepositButton = ({
     hash: data?.hash,
   });
 
-  // console.log({ txReceipt });
+  console.log({ txReceipt });
 
   useEffect(() => {
     if (txReceipt?.status === "success") {

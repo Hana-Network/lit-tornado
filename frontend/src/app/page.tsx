@@ -44,7 +44,7 @@ export default function Home() {
             <link rel="icon" href="/favicon.ico" />
           </Head>
           <Header />
-          <div className="flex-grow flex justify-center items-center mt-[-5rem]">
+          <div className="flex-grow flex justify-center items-center ">
             <Main />
           </div>
         </WagmiConfig>

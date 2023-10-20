@@ -23,6 +23,7 @@ export const Main = () => {
   const [showModal, setShowModal] = useState(false);
   const [commitmentMessage, setCommitmentMessage] = useState("");
   const [note, setNote] = useState<NOTE>();
+  const [recipientAddress, setRecipientAddress] = useState<`0x${string}`>();
 
   const depositSuccess = (secret: `0x${string}`, nullifier: `0x${string}`) => {
     console.log("deposit success");
@@ -33,7 +34,9 @@ export const Main = () => {
 
   return (
     <div className="bg-base-200 p-8 rounded-lg w-96">
-      <div id="withdrawReward"></div>
+      <div className="flex justify-center">
+        <div id="withdrawReward"></div>
+      </div>
       <div className="mb-6">
         <div className="tabs flex justify-center w-full space-x-4">
           <a
@@ -96,7 +99,21 @@ export const Main = () => {
             <label className="block text-base-content text-opacity-medium text-sm mb-2">
               Receipient Address
             </label>
-            <input></input>
+            <input
+              type="text"
+              placeholder="Paste here"
+              className="prose input input-bordered w-full max-w-xs"
+              value={recipientAddress || ""}
+              onChange={(e) => {
+                const value = e.target.value;
+                console.log(value.length);
+                if (!value.startsWith("0x") || value.length !== 42) {
+                  toast.error("Invalid address!");
+                  return;
+                }
+                setRecipientAddress(value as `0x${string}`);
+              }}
+            />
           </div>
           <div className="mb-6">
             <label className="block text-base-content text-opacity-medium text-sm mb-2">
@@ -105,6 +122,7 @@ export const Main = () => {
             <textarea
               className="prose textarea textarea-bordered textarea-xs w-full max-w-xs"
               value={JSON.stringify(note)}
+              placeholder="Paste here"
               onChange={(e) => {
                 const value = e.target.value;
                 let parsedValue = {};
@@ -129,7 +147,7 @@ export const Main = () => {
         activeTab == Tab.Deposit ? (
           <DepositButton depositSuccess={depositSuccess} />
         ) : (
-          <WithdrawButton note={note} />
+          <WithdrawButton note={note} recipientAddress={recipientAddress} />
         )
       ) : (
         <button className="btn btn-primary w-full" onClick={() => open()}>

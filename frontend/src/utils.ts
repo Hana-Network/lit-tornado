@@ -22,7 +22,9 @@ export function isNote(object: any): object is NOTE {
     object !== null &&
     typeof object.secret === "string" &&
     object.secret.startsWith("0x") &&
+    object.secret.length === 66 &&
     typeof object.nullifier === "string" &&
-    object.nullifier.startsWith("0x")
+    object.nullifier.startsWith("0x") &&
+    object.nullifier.length === 66
   );
 }

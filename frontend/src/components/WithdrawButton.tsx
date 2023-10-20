@@ -35,7 +35,13 @@ const go = async () => {
 go();
 `;
 
-export const WithdrawButton = ({ note }: { note?: NOTE }) => {
+export const WithdrawButton = ({
+  note,
+  recipientAddress,
+}: {
+  note?: NOTE;
+  recipientAddress?: `0x${string}`;
+}) => {
   const { address, isConnecting } = useAccount();
   const { reward } = useReward("withdrawReward", "confetti", {
     lifetime: 1000,
@@ -56,7 +62,7 @@ export const WithdrawButton = ({ note }: { note?: NOTE }) => {
 
   const root = rootData;
   const nullifierHash = note && keccak256(note.nullifier);
-  const recipientAddress = address;
+  // const recipientAddress = address;
   const relayerAddress = RELAYER_ADDRESS;
   const fee = RELAYER_FEE;
 
@@ -98,7 +104,12 @@ export const WithdrawButton = ({ note }: { note?: NOTE }) => {
     enabled: Boolean(enableWithdraw),
   });
 
-  const { write, status, data: dataWithdraw } = useLitTornadoWithdraw(config);
+  const {
+    write,
+    status,
+    data: dataWithdraw,
+    error: writeError,
+  } = useLitTornadoWithdraw(config);
 
   const {
     data: txReceipt,
@@ -160,21 +171,27 @@ export const WithdrawButton = ({ note }: { note?: NOTE }) => {
       const sig = signatures.sig1;
 
       setSignMessageData(sig.signature);
+      toast.success("PKP Sign message success!");
     } catch (e) {
       console.log(e);
       toast.error("PKP Sign message failed!");
     } finally {
       setShowLoading(false);
-      toast.success("PKP Sign message success!");
     }
   };
 
   useEffect(() => {
     if (signMessageData && write) {
       console.log("withdraw");
-      // write?.();
+      write?.();
     }
   }, [signMessageData, write]);
+
+  useEffect(() => {
+    if (error || writeError) {
+      toast.error("Withdraw failed!");
+    }
+  }, [error, writeError]);
 
   useEffect(() => {
     if (txReceipt?.status === "success") {
@@ -183,14 +200,18 @@ export const WithdrawButton = ({ note }: { note?: NOTE }) => {
     } else if (txReceipt?.status === "reverted") {
       toast.error("Withdraw failed!");
     }
-  }, [txReceipt]);
+  }, [txReceipt?.status]);
 
   return (
     <>
       <button
         className="btn btn-primary w-full"
         disabled={
-          !note || showLoading || status === "loading" || txStatus === "loading"
+          !note ||
+          !recipientAddress ||
+          showLoading ||
+          status === "loading" ||
+          txStatus === "loading"
         }
         // https://github.com/wagmi-dev/wagmi/pull/2719
         onClick={() => {
