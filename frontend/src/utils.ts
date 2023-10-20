@@ -1,4 +1,5 @@
 import { encodePacked, keccak256 } from "viem";
+import { NOTE } from "./constants";
 
 export function generateRandom32BytesHex(): `0x${string}` {
   const randomBytes = crypto.getRandomValues(new Uint8Array(32));
@@ -14,3 +15,14 @@ export const generateCommitment = (
 ) => {
   return keccak256(encodePacked(["bytes32", "bytes32"], [secret, nullifier]));
 };
+
+export function isNote(object: any): object is NOTE {
+  return (
+    typeof object === "object" &&
+    object !== null &&
+    typeof object.secret === "string" &&
+    object.secret.startsWith("0x") &&
+    typeof object.nullifier === "string" &&
+    object.nullifier.startsWith("0x")
+  );
+}

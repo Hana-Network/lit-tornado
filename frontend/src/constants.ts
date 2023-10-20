@@ -3,6 +3,7 @@ import { parseEther } from "viem";
 export const MIXINER_ADDRESS = "0x75fc58514cf666640a3f5ca7d8e2f8c0fe262f86";
 export const DENOMINATION = parseEther("0.1");
 export const RELAYER_FEE = parseEther("0.01");
+export const RELAYER_ADDRESS = "0x951444F56EF94FeC42e8cDBeDef1A4Dc1D1ea63B";
 export const SAMPLE_SECRET =
   "0x9c1a3b673a4e4820143acbddb65082f13530a972df68a1eec1f5c09d70d1ca34";
 
@@ -35,6 +36,11 @@ export enum AuthMethodType {
   Google,
   GoogleJwt,
 }
+
+export type NOTE = {
+  secret: `0x${string}`;
+  nullifier: `0x${string}`;
+};
 
 export const PKP_NFT_PUBLIC_KEY =
   "0x04d8d2d47a3b590ff1127d57ee030bfc7198fac82fef265a0cd86c568e585c7419ddf5a9738d5df8a431db52b59c0c7c5c69cc001d8838038597f1c42c0db195a9";

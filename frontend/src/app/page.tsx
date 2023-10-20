@@ -8,7 +8,7 @@ import { Header } from "@/components/Header";
 import { Main } from "@/components/Main";
 import { Toaster } from "react-hot-toast";
 
-const chains = [goerli, polygonMumbai];
+const chains = [polygonMumbai];
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || "";
 
 const metadata = {
