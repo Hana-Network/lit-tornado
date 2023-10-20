@@ -59,14 +59,6 @@ contract LitTornado is MerkleTreeWithHistory, ReentrancyGuard {
         emit Deposit(_commitment, insertedIndex, block.timestamp);
     }
 
-    function generateProofFromCommitment(
-        bytes32 leaf
-    ) public view returns (bytes32[] memory proof) {
-        require(commitments[leaf], "Leaf not found");
-        uint32 _index = commitmentIndices[leaf];
-        return generateProof(leaf, _index);
-    }
-
     /*
     function splitSignature(
         bytes memory signature
@@ -187,4 +179,12 @@ contract LitTornado is MerkleTreeWithHistory, ReentrancyGuard {
     function isSpent(bytes32 nullifierHash) external view returns (bool) {
         return nullifierHashes[nullifierHash];
     }
+
+    // function generateProofFromCommitment(
+    //     bytes32 leaf
+    // ) public view returns (bytes32[] memory, bool[] memory) {
+    //     require(commitments[leaf], "Leaf not found");
+    //     uint32 _index = commitmentIndices[leaf];
+    //     return generateMerkleProof(_index);
+    // }
 }

@@ -2,10 +2,6 @@
 pragma solidity ^0.8.9;
 
 contract MerkleTreeWithHistory {
-    // uint256 public constant FIELD_SIZE =
-    //     21888242871839275222246405745257275088548364400416034343698204186575808495617;
-    // uint256 public constant ZERO_VALUE =
-    //     21663839004416932945382355908790599225266501822907911457504978515578255421292; // = keccak256("tornado") % FIELD_SIZE
     uint32 public levels;
 
     mapping(uint256 => bytes32) public filledSubtrees;
@@ -13,17 +9,22 @@ contract MerkleTreeWithHistory {
     uint32 public constant ROOT_HISTORY_SIZE = 30;
     uint32 public currentRootIndex = 0;
     uint32 public nextIndex = 0;
+    // for simplisity
+    uint32 public constant TREE_HEIGHT = 10;
+    bytes32[2 ** TREE_HEIGHT] public leaves;
 
     constructor(uint32 _levels) {
-        require(_levels > 0, "_levels should be greater than zero");
-        require(_levels < 32, "_levels should be less than 32");
-        levels = _levels;
+        // require(_levels > 0, "_levels should be greater than zero");
+        // require(_levels < 32, "_levels should be less than 32");
+        // levels = _levels;
+        levels = TREE_HEIGHT;
 
+        // for simplisity
         for (uint32 i = 0; i < _levels; i++) {
-            filledSubtrees[i] = zeros(i);
+            filledSubtrees[i] = 0;
         }
 
-        roots[0] = zeros(_levels - 1);
+        roots[0] = 0;
     }
 
     function hashLeftRight(
@@ -47,6 +48,9 @@ contract MerkleTreeWithHistory {
             _nextIndex != uint32(2) ** levels,
             "Merkle tree is full. No more leaves can be added"
         );
+        // leaves.push(_leaf);
+        leaves[_nextIndex] = _leaf;
+
         uint32 currentIndex = _nextIndex;
         bytes32 currentLevelHash = _leaf;
         bytes32 left;
@@ -55,7 +59,7 @@ contract MerkleTreeWithHistory {
         for (uint32 i = 0; i < levels; i++) {
             if (currentIndex % 2 == 0) {
                 left = currentLevelHash;
-                right = zeros(i);
+                // right = zeros(i);
                 filledSubtrees[i] = currentLevelHash;
             } else {
                 left = filledSubtrees[i];
@@ -96,27 +100,53 @@ contract MerkleTreeWithHistory {
         return roots[currentRootIndex];
     }
 
-    function generateProof(
-        bytes32 leaf,
-        uint32 _index
-    ) public view returns (bytes32[] memory proof) {
-        proof = new bytes32[](levels);
-        bytes32 currentLevelHash = leaf;
-        for (uint32 i = 0; i < levels; i++) {
-            if (_index % 2 == 0) {
-                proof[i] = filledSubtrees[i];
-            } else {
-                proof[i] = currentLevelHash;
-            }
-            currentLevelHash = hashLeftRight(
-                currentLevelHash,
-                filledSubtrees[i]
-            );
-            _index /= 2;
+    // function generateMerkleProof(
+    //     uint256 leafIndex
+    // ) public view returns (bytes32[] memory, bool[] memory) {
+    //     require(leafIndex < (2 ** levels), "Leaf index is out of bounds");
+
+    //     bytes32[] memory proof = new bytes32[](levels);
+    //     bool[] memory isRightNode = new bool[](levels);
+    //     uint256 index = leafIndex;
+    //     for (uint256 i = 0; i < levels; i++) {
+    //         uint256 siblingIndex = index % 2 == 0 ? index + 1 : index - 1;
+    //         proof[i] = siblingIndex < 2 ** i
+    //             ? filledSubtrees[i][siblingIndex]
+    //             : leaves[siblingIndex];
+    //         isRightNode[i] = index % 2 == 1;
+    //         index = index / 2;
+    //     }
+    //     return (proof, isRightNode);
+    // }
+
+    // function generateMerkleProof(
+    //     uint256 leafIndex
+    // ) public view returns (bytes32[] memory, bool[] memory) {
+    //     require(leafIndex < (2 ** levels), "Leaf index is out of bounds");
+
+    //     bytes32[] memory proof = new bytes32[](levels);
+    //     bool[] memory isRightNode = new bool[](levels);
+    //     uint256 index = leafIndex;
+    //     for (uint256 i = 0; i < levels; i++) {
+    //         uint256 siblingIndex = index % 2 == 0 ? index + 1 : index - 1;
+    //         proof[i] = siblingIndex < 2 ** i
+    //             ? filledSubtrees[i][siblingIndex]
+    //             : leaves[siblingIndex];
+    //         isRightNode[i] = index % 2 == 1;
+    //         index = index / 2;
+    //     }
+    //     return (proof, isRightNode);
+    // }
+
+    function getLeaves() public view returns (bytes32[] memory) {
+        bytes32[] memory result = new bytes32[](leaves.length);
+        for (uint256 i = 0; i < leaves.length; i++) {
+            result[i] = leaves[i];
         }
-        return proof;
+        return result;
     }
 
+    /* for simplisity
     /// @dev provides Zero (Empty) elements for a MiMC MerkleTree. Up to 32 levels
     function zeros(uint256 i) public pure returns (bytes32) {
         if (i == 0)
@@ -281,4 +311,5 @@ contract MerkleTreeWithHistory {
                 );
         else revert("Index out of bounds");
     }
+    */
 }
