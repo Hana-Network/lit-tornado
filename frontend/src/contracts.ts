@@ -25,7 +25,6 @@ export const litTornadoABI = [
     inputs: [
       { name: '_verifier', internalType: 'address', type: 'address' },
       { name: '_denomination', internalType: 'uint256', type: 'uint256' },
-      { name: '_merkleTreeHeight', internalType: 'uint32', type: 'uint32' },
     ],
   },
   {
@@ -84,6 +83,13 @@ export const litTornadoABI = [
   {
     stateMutability: 'view',
     type: 'function',
+    inputs: [],
+    name: 'TREE_HEIGHT',
+    outputs: [{ name: '', internalType: 'uint32', type: 'uint32' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
     inputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
     name: 'commitmentIndices',
     outputs: [{ name: '', internalType: 'uint32', type: 'uint32' }],
@@ -126,26 +132,16 @@ export const litTornadoABI = [
   {
     stateMutability: 'view',
     type: 'function',
-    inputs: [
-      { name: 'leaf', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_index', internalType: 'uint32', type: 'uint32' },
-    ],
-    name: 'generateProof',
-    outputs: [{ name: 'proof', internalType: 'bytes32[]', type: 'bytes32[]' }],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: 'leaf', internalType: 'bytes32', type: 'bytes32' }],
-    name: 'generateProofFromCommitment',
-    outputs: [{ name: 'proof', internalType: 'bytes32[]', type: 'bytes32[]' }],
+    inputs: [],
+    name: 'getLastRoot',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
   },
   {
     stateMutability: 'view',
     type: 'function',
     inputs: [],
-    name: 'getLastRoot',
-    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'getLeaves',
+    outputs: [{ name: '', internalType: 'bytes32[]', type: 'bytes32[]' }],
   },
   {
     stateMutability: 'pure',
@@ -156,6 +152,26 @@ export const litTornadoABI = [
     ],
     name: 'hashLeftRight',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+  },
+  {
+    stateMutability: 'pure',
+    type: 'function',
+    inputs: [
+      { name: 'root', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'nullifierHash', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'recipient', internalType: 'address payable', type: 'address' },
+      { name: 'relayer', internalType: 'address payable', type: 'address' },
+      { name: 'fee', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'hashTest',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'initializeFilledSubtrees',
+    outputs: [],
   },
   {
     stateMutability: 'view',
@@ -172,6 +188,13 @@ export const litTornadoABI = [
     ],
     name: 'isSpent',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    name: 'leaves',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
   },
   {
     stateMutability: 'view',
@@ -193,6 +216,20 @@ export const litTornadoABI = [
     inputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
     name: 'nullifierHashes',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'pure',
+    type: 'function',
+    inputs: [
+      { name: 'signature', internalType: 'bytes', type: 'bytes' },
+      { name: 'root', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'nullifierHash', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'recipient', internalType: 'address payable', type: 'address' },
+      { name: 'relayer', internalType: 'address payable', type: 'address' },
+      { name: 'fee', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'recoveryTest',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
   },
   {
     stateMutability: 'view',
@@ -223,9 +260,9 @@ export const litTornadoABI = [
     outputs: [],
   },
   {
-    stateMutability: 'pure',
+    stateMutability: 'view',
     type: 'function',
-    inputs: [{ name: 'i', internalType: 'uint256', type: 'uint256' }],
+    inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     name: 'zeros',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
   },
@@ -288,16 +325,19 @@ export const lockABI = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const merkleTreeWithHistoryABI = [
-  {
-    stateMutability: 'nonpayable',
-    type: 'constructor',
-    inputs: [{ name: '_levels', internalType: 'uint32', type: 'uint32' }],
-  },
+  { stateMutability: 'nonpayable', type: 'constructor', inputs: [] },
   {
     stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'ROOT_HISTORY_SIZE',
+    outputs: [{ name: '', internalType: 'uint32', type: 'uint32' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'TREE_HEIGHT',
     outputs: [{ name: '', internalType: 'uint32', type: 'uint32' }],
   },
   {
@@ -317,19 +357,16 @@ export const merkleTreeWithHistoryABI = [
   {
     stateMutability: 'view',
     type: 'function',
-    inputs: [
-      { name: 'leaf', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_index', internalType: 'uint32', type: 'uint32' },
-    ],
-    name: 'generateProof',
-    outputs: [{ name: 'proof', internalType: 'bytes32[]', type: 'bytes32[]' }],
+    inputs: [],
+    name: 'getLastRoot',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
   },
   {
     stateMutability: 'view',
     type: 'function',
     inputs: [],
-    name: 'getLastRoot',
-    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'getLeaves',
+    outputs: [{ name: '', internalType: 'bytes32[]', type: 'bytes32[]' }],
   },
   {
     stateMutability: 'pure',
@@ -342,11 +379,25 @@ export const merkleTreeWithHistoryABI = [
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
   },
   {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'initializeFilledSubtrees',
+    outputs: [],
+  },
+  {
     stateMutability: 'view',
     type: 'function',
     inputs: [{ name: '_root', internalType: 'bytes32', type: 'bytes32' }],
     name: 'isKnownRoot',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    name: 'leaves',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
   },
   {
     stateMutability: 'view',
@@ -370,9 +421,9 @@ export const merkleTreeWithHistoryABI = [
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
   },
   {
-    stateMutability: 'pure',
+    stateMutability: 'view',
     type: 'function',
-    inputs: [{ name: 'i', internalType: 'uint256', type: 'uint256' }],
+    inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     name: 'zeros',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
   },
@@ -415,6 +466,25 @@ export function useLitTornadoRootHistorySize<
   return useContractRead({
     abi: litTornadoABI,
     functionName: 'ROOT_HISTORY_SIZE',
+    ...config,
+  } as UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link litTornadoABI}__ and `functionName` set to `"TREE_HEIGHT"`.
+ */
+export function useLitTornadoTreeHeight<
+  TFunctionName extends 'TREE_HEIGHT',
+  TSelectData = ReadContractResult<typeof litTornadoABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: litTornadoABI,
+    functionName: 'TREE_HEIGHT',
     ...config,
   } as UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>)
 }
@@ -515,44 +585,6 @@ export function useLitTornadoFilledSubtrees<
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link litTornadoABI}__ and `functionName` set to `"generateProof"`.
- */
-export function useLitTornadoGenerateProof<
-  TFunctionName extends 'generateProof',
-  TSelectData = ReadContractResult<typeof litTornadoABI, TFunctionName>,
->(
-  config: Omit<
-    UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>,
-    'abi' | 'functionName'
-  > = {} as any,
-) {
-  return useContractRead({
-    abi: litTornadoABI,
-    functionName: 'generateProof',
-    ...config,
-  } as UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link litTornadoABI}__ and `functionName` set to `"generateProofFromCommitment"`.
- */
-export function useLitTornadoGenerateProofFromCommitment<
-  TFunctionName extends 'generateProofFromCommitment',
-  TSelectData = ReadContractResult<typeof litTornadoABI, TFunctionName>,
->(
-  config: Omit<
-    UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>,
-    'abi' | 'functionName'
-  > = {} as any,
-) {
-  return useContractRead({
-    abi: litTornadoABI,
-    functionName: 'generateProofFromCommitment',
-    ...config,
-  } as UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>)
-}
-
-/**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link litTornadoABI}__ and `functionName` set to `"getLastRoot"`.
  */
 export function useLitTornadoGetLastRoot<
@@ -572,6 +604,25 @@ export function useLitTornadoGetLastRoot<
 }
 
 /**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link litTornadoABI}__ and `functionName` set to `"getLeaves"`.
+ */
+export function useLitTornadoGetLeaves<
+  TFunctionName extends 'getLeaves',
+  TSelectData = ReadContractResult<typeof litTornadoABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: litTornadoABI,
+    functionName: 'getLeaves',
+    ...config,
+  } as UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>)
+}
+
+/**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link litTornadoABI}__ and `functionName` set to `"hashLeftRight"`.
  */
 export function useLitTornadoHashLeftRight<
@@ -586,6 +637,25 @@ export function useLitTornadoHashLeftRight<
   return useContractRead({
     abi: litTornadoABI,
     functionName: 'hashLeftRight',
+    ...config,
+  } as UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link litTornadoABI}__ and `functionName` set to `"hashTest"`.
+ */
+export function useLitTornadoHashTest<
+  TFunctionName extends 'hashTest',
+  TSelectData = ReadContractResult<typeof litTornadoABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: litTornadoABI,
+    functionName: 'hashTest',
     ...config,
   } as UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>)
 }
@@ -624,6 +694,25 @@ export function useLitTornadoIsSpent<
   return useContractRead({
     abi: litTornadoABI,
     functionName: 'isSpent',
+    ...config,
+  } as UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link litTornadoABI}__ and `functionName` set to `"leaves"`.
+ */
+export function useLitTornadoLeaves<
+  TFunctionName extends 'leaves',
+  TSelectData = ReadContractResult<typeof litTornadoABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: litTornadoABI,
+    functionName: 'leaves',
     ...config,
   } as UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>)
 }
@@ -681,6 +770,25 @@ export function useLitTornadoNullifierHashes<
   return useContractRead({
     abi: litTornadoABI,
     functionName: 'nullifierHashes',
+    ...config,
+  } as UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link litTornadoABI}__ and `functionName` set to `"recoveryTest"`.
+ */
+export function useLitTornadoRecoveryTest<
+  TFunctionName extends 'recoveryTest',
+  TSelectData = ReadContractResult<typeof litTornadoABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: litTornadoABI,
+    functionName: 'recoveryTest',
     ...config,
   } as UseContractReadConfig<typeof litTornadoABI, TFunctionName, TSelectData>)
 }
@@ -796,6 +904,41 @@ export function useLitTornadoDeposit<
 }
 
 /**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link litTornadoABI}__ and `functionName` set to `"initializeFilledSubtrees"`.
+ */
+export function useLitTornadoInitializeFilledSubtrees<
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof litTornadoABI,
+          'initializeFilledSubtrees'
+        >['request']['abi'],
+        'initializeFilledSubtrees',
+        TMode
+      > & { functionName?: 'initializeFilledSubtrees' }
+    : UseContractWriteConfig<
+        typeof litTornadoABI,
+        'initializeFilledSubtrees',
+        TMode
+      > & {
+        abi?: never
+        functionName?: 'initializeFilledSubtrees'
+      } = {} as any,
+) {
+  return useContractWrite<
+    typeof litTornadoABI,
+    'initializeFilledSubtrees',
+    TMode
+  >({
+    abi: litTornadoABI,
+    functionName: 'initializeFilledSubtrees',
+    ...config,
+  } as any)
+}
+
+/**
  * Wraps __{@link useContractWrite}__ with `abi` set to __{@link litTornadoABI}__ and `functionName` set to `"withdraw"`.
  */
 export function useLitTornadoWithdraw<
@@ -851,6 +994,28 @@ export function usePrepareLitTornadoDeposit(
     functionName: 'deposit',
     ...config,
   } as UsePrepareContractWriteConfig<typeof litTornadoABI, 'deposit'>)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link litTornadoABI}__ and `functionName` set to `"initializeFilledSubtrees"`.
+ */
+export function usePrepareLitTornadoInitializeFilledSubtrees(
+  config: Omit<
+    UsePrepareContractWriteConfig<
+      typeof litTornadoABI,
+      'initializeFilledSubtrees'
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: litTornadoABI,
+    functionName: 'initializeFilledSubtrees',
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof litTornadoABI,
+    'initializeFilledSubtrees'
+  >)
 }
 
 /**
@@ -1143,6 +1308,36 @@ export function useMerkleTreeWithHistoryRootHistorySize<
 }
 
 /**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link merkleTreeWithHistoryABI}__ and `functionName` set to `"TREE_HEIGHT"`.
+ */
+export function useMerkleTreeWithHistoryTreeHeight<
+  TFunctionName extends 'TREE_HEIGHT',
+  TSelectData = ReadContractResult<
+    typeof merkleTreeWithHistoryABI,
+    TFunctionName
+  >,
+>(
+  config: Omit<
+    UseContractReadConfig<
+      typeof merkleTreeWithHistoryABI,
+      TFunctionName,
+      TSelectData
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: merkleTreeWithHistoryABI,
+    functionName: 'TREE_HEIGHT',
+    ...config,
+  } as UseContractReadConfig<
+    typeof merkleTreeWithHistoryABI,
+    TFunctionName,
+    TSelectData
+  >)
+}
+
+/**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link merkleTreeWithHistoryABI}__ and `functionName` set to `"currentRootIndex"`.
  */
 export function useMerkleTreeWithHistoryCurrentRootIndex<
@@ -1203,36 +1398,6 @@ export function useMerkleTreeWithHistoryFilledSubtrees<
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link merkleTreeWithHistoryABI}__ and `functionName` set to `"generateProof"`.
- */
-export function useMerkleTreeWithHistoryGenerateProof<
-  TFunctionName extends 'generateProof',
-  TSelectData = ReadContractResult<
-    typeof merkleTreeWithHistoryABI,
-    TFunctionName
-  >,
->(
-  config: Omit<
-    UseContractReadConfig<
-      typeof merkleTreeWithHistoryABI,
-      TFunctionName,
-      TSelectData
-    >,
-    'abi' | 'functionName'
-  > = {} as any,
-) {
-  return useContractRead({
-    abi: merkleTreeWithHistoryABI,
-    functionName: 'generateProof',
-    ...config,
-  } as UseContractReadConfig<
-    typeof merkleTreeWithHistoryABI,
-    TFunctionName,
-    TSelectData
-  >)
-}
-
-/**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link merkleTreeWithHistoryABI}__ and `functionName` set to `"getLastRoot"`.
  */
 export function useMerkleTreeWithHistoryGetLastRoot<
@@ -1254,6 +1419,36 @@ export function useMerkleTreeWithHistoryGetLastRoot<
   return useContractRead({
     abi: merkleTreeWithHistoryABI,
     functionName: 'getLastRoot',
+    ...config,
+  } as UseContractReadConfig<
+    typeof merkleTreeWithHistoryABI,
+    TFunctionName,
+    TSelectData
+  >)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link merkleTreeWithHistoryABI}__ and `functionName` set to `"getLeaves"`.
+ */
+export function useMerkleTreeWithHistoryGetLeaves<
+  TFunctionName extends 'getLeaves',
+  TSelectData = ReadContractResult<
+    typeof merkleTreeWithHistoryABI,
+    TFunctionName
+  >,
+>(
+  config: Omit<
+    UseContractReadConfig<
+      typeof merkleTreeWithHistoryABI,
+      TFunctionName,
+      TSelectData
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: merkleTreeWithHistoryABI,
+    functionName: 'getLeaves',
     ...config,
   } as UseContractReadConfig<
     typeof merkleTreeWithHistoryABI,
@@ -1314,6 +1509,36 @@ export function useMerkleTreeWithHistoryIsKnownRoot<
   return useContractRead({
     abi: merkleTreeWithHistoryABI,
     functionName: 'isKnownRoot',
+    ...config,
+  } as UseContractReadConfig<
+    typeof merkleTreeWithHistoryABI,
+    TFunctionName,
+    TSelectData
+  >)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link merkleTreeWithHistoryABI}__ and `functionName` set to `"leaves"`.
+ */
+export function useMerkleTreeWithHistoryLeaves<
+  TFunctionName extends 'leaves',
+  TSelectData = ReadContractResult<
+    typeof merkleTreeWithHistoryABI,
+    TFunctionName
+  >,
+>(
+  config: Omit<
+    UseContractReadConfig<
+      typeof merkleTreeWithHistoryABI,
+      TFunctionName,
+      TSelectData
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return useContractRead({
+    abi: merkleTreeWithHistoryABI,
+    functionName: 'leaves',
     ...config,
   } as UseContractReadConfig<
     typeof merkleTreeWithHistoryABI,
@@ -1439,5 +1664,116 @@ export function useMerkleTreeWithHistoryZeros<
     typeof merkleTreeWithHistoryABI,
     TFunctionName,
     TSelectData
+  >)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link merkleTreeWithHistoryABI}__.
+ */
+export function useMerkleTreeWithHistoryWrite<
+  TFunctionName extends string,
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof merkleTreeWithHistoryABI,
+          string
+        >['request']['abi'],
+        TFunctionName,
+        TMode
+      >
+    : UseContractWriteConfig<
+        typeof merkleTreeWithHistoryABI,
+        TFunctionName,
+        TMode
+      > & {
+        abi?: never
+      } = {} as any,
+) {
+  return useContractWrite<
+    typeof merkleTreeWithHistoryABI,
+    TFunctionName,
+    TMode
+  >({ abi: merkleTreeWithHistoryABI, ...config } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link merkleTreeWithHistoryABI}__ and `functionName` set to `"initializeFilledSubtrees"`.
+ */
+export function useMerkleTreeWithHistoryInitializeFilledSubtrees<
+  TMode extends WriteContractMode = undefined,
+>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof merkleTreeWithHistoryABI,
+          'initializeFilledSubtrees'
+        >['request']['abi'],
+        'initializeFilledSubtrees',
+        TMode
+      > & { functionName?: 'initializeFilledSubtrees' }
+    : UseContractWriteConfig<
+        typeof merkleTreeWithHistoryABI,
+        'initializeFilledSubtrees',
+        TMode
+      > & {
+        abi?: never
+        functionName?: 'initializeFilledSubtrees'
+      } = {} as any,
+) {
+  return useContractWrite<
+    typeof merkleTreeWithHistoryABI,
+    'initializeFilledSubtrees',
+    TMode
+  >({
+    abi: merkleTreeWithHistoryABI,
+    functionName: 'initializeFilledSubtrees',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link merkleTreeWithHistoryABI}__.
+ */
+export function usePrepareMerkleTreeWithHistoryWrite<
+  TFunctionName extends string,
+>(
+  config: Omit<
+    UsePrepareContractWriteConfig<
+      typeof merkleTreeWithHistoryABI,
+      TFunctionName
+    >,
+    'abi'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: merkleTreeWithHistoryABI,
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof merkleTreeWithHistoryABI,
+    TFunctionName
+  >)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link merkleTreeWithHistoryABI}__ and `functionName` set to `"initializeFilledSubtrees"`.
+ */
+export function usePrepareMerkleTreeWithHistoryInitializeFilledSubtrees(
+  config: Omit<
+    UsePrepareContractWriteConfig<
+      typeof merkleTreeWithHistoryABI,
+      'initializeFilledSubtrees'
+    >,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: merkleTreeWithHistoryABI,
+    functionName: 'initializeFilledSubtrees',
+    ...config,
+  } as UsePrepareContractWriteConfig<
+    typeof merkleTreeWithHistoryABI,
+    'initializeFilledSubtrees'
   >)
 }
