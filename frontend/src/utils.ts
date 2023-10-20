@@ -9,12 +9,12 @@ export function generateRandom32BytesHex(): `0x${string}` {
   return `0x${randomHex}`;
 }
 
-export const generateCommitment = (
+export function generateCommitment(
   secret: `0x${string}`,
   nullifier: `0x${string}`
-) => {
+) {
   return keccak256(encodePacked(["bytes32", "bytes32"], [secret, nullifier]));
-};
+}
 
 export function isNote(object: any): object is NOTE {
   return (

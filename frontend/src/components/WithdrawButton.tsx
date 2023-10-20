@@ -5,6 +5,7 @@ import {
   RELAYER_ADDRESS,
   RELAYER_FEE,
   SAMPLE_NULLIFIER,
+  TREE_HEIGHT,
 } from "@/constants";
 
 import { encodePacked, keccak256, toBytes } from "viem";
@@ -13,6 +14,7 @@ import {
   useMerkleTreeWithHistoryGetLastRoot,
   usePrepareLitTornadoWithdraw,
   useLitTornadoVerifier,
+  useMerkleTreeWithHistoryGetLeaves,
 } from "@/contracts";
 import { generateCommitment } from "@/utils";
 import { useAccount, useSignMessage, useWaitForTransaction } from "wagmi";
@@ -20,20 +22,8 @@ import { useEffect, useState } from "react";
 import { checkAndSignAuthMessage } from "@lit-protocol/lit-node-client";
 import toast from "react-hot-toast";
 import { useReward } from "react-rewards";
-
-// const litActionCode = `
-// // const go = async () => {
-// //   const sigShare = await LitActions.ethPersonalSignMessageEcdsa({ message, publicKey , sigName });
-// // };
-// // go();
-// `;
-const litActionCode = `
-const go = async () => {
-  const sigShare = await Lit.Actions.signEcdsa({ toSign, publicKey , sigName });
-  // LitActions.setResponse({ response: JSON.stringify(sigShare) });
-};
-go();
-`;
+import { PROOF_LIT_ACTION_CODE } from "@/lit";
+import { useMerkleTree } from "@/hooks/useMerkleTree";
 
 export const WithdrawButton = ({
   note,
@@ -42,7 +32,7 @@ export const WithdrawButton = ({
   note?: NOTE;
   recipientAddress?: `0x${string}`;
 }) => {
-  const { address, isConnecting } = useAccount();
+  // const { address, isConnecting } = useAccount();
   const { reward } = useReward("withdrawReward", "confetti", {
     lifetime: 1000,
     startVelocity: 20,
@@ -51,24 +41,30 @@ export const WithdrawButton = ({
   const {
     data: rootData,
     isError: isReadRootError,
-    isLoading,
+    // isLoading: isRootLoading,
   } = useMerkleTreeWithHistoryGetLastRoot({
     address: MIXINER_ADDRESS,
   });
 
-  // const { data: verifierData } = useLitTornadoVerifier({
-  //   address: MIXINER_ADDRESS,
-  // });
+  const { data: leavesData, isError: isReadLeavesError } =
+    useMerkleTreeWithHistoryGetLeaves({ address: MIXINER_ADDRESS });
 
   const root = rootData;
+  const leaves = leavesData;
+  const commitment = note && generateCommitment(note.secret, note.nullifier);
+  const proof = useMerkleTree({
+    leaves,
+    commitment,
+  });
+
   const nullifierHash = note && keccak256(note.nullifier);
   // const recipientAddress = address;
   const relayerAddress = RELAYER_ADDRESS;
   const fee = RELAYER_FEE;
 
-  if (!root || !nullifierHash || !recipientAddress || !relayerAddress || !fee) {
-    console.log({ rootData, isReadRootError, isLoading });
-  }
+  // if (!root || !nullifierHash || !recipientAddress || !relayerAddress || !fee) {
+  //   console.log({ rootData, isReadRootError });
+  // }
 
   const [signMessageData, setSignMessageData] = useState<`0x${string}`>();
   const enableWithdraw =
@@ -78,13 +74,6 @@ export const WithdrawButton = ({
     recipientAddress &&
     relayerAddress &&
     fee;
-  // console.log(enableWithdraw);
-  // console.log({ signMessageData });
-  // console.log({ root });
-  // console.log({ nullifierHash });
-  // console.log({ recipientAddress });
-  // console.log({ relayerAddress });
-  // console.log({ fee });
 
   const {
     config,
@@ -141,7 +130,9 @@ export const WithdrawButton = ({
         !nullifierHash ||
         !recipientAddress ||
         !relayerAddress ||
-        !fee
+        !fee ||
+        !leaves ||
+        !commitment
       ) {
         // error
         toast.error("PKP Sign message failed!");
@@ -157,8 +148,15 @@ export const WithdrawButton = ({
       const results = await litNodeClient.executeJs({
         // ipfsId: "Qmf6oYS7nNPV8ZGTk8KdifbPQCa61GwjaMJqXDGac3pnnN",
         authSig,
-        code: litActionCode,
+        code: PROOF_LIT_ACTION_CODE,
         jsParams: {
+          data: {
+            commitment,
+            root,
+            proof,
+            leafIndex: leaves.indexOf(commitment),
+            merkleTreeHeight: TREE_HEIGHT,
+          },
           publicKey:
             "0x042034f83acf8e7c97118b0499073e964a93b69b5e1ad94c3627fd8665c4affb2086c59b729ac62a3fa77143a7006fd2f0e2b7e3d7253479346ba4583076f22a51",
           sigName: "sig1",
@@ -183,7 +181,7 @@ export const WithdrawButton = ({
   useEffect(() => {
     if (signMessageData && write) {
       console.log("withdraw");
-      write?.();
+      // write?.();
     }
   }, [signMessageData, write]);
 
@@ -224,17 +222,6 @@ export const WithdrawButton = ({
         )}
         Withdraw
       </button>
-      {/* <button
-        className="btn btn-primary w-full"
-        disabled={false}
-        // https://github.com/wagmi-dev/wagmi/pull/2719
-        onClick={() => {
-          console.log(write);
-          write?.();
-        }}
-      >
-        Withdraw
-      </button> */}
     </>
   );
 };
