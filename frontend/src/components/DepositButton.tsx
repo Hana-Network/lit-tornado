@@ -1,42 +1,37 @@
 "use client";
 import { DENOMINATION, MIXINER_ADDRESS } from "@/constants";
 import { usePrepareLitTornadoDeposit, useLitTornadoDeposit } from "@/contracts";
-import { generateCommitment, generateRandom32BytesHex } from "@/utils";
-import { useEffect, useState } from "react";
+import { generateCommitment } from "@/utils";
+import { useEffect } from "react";
 import { useWaitForTransaction } from "wagmi";
 import toast from "react-hot-toast";
 
-const SECRET = generateRandom32BytesHex();
-const NULLIFIER = generateRandom32BytesHex();
 export const DepositButton = ({
   depositSuccess,
+  secret,
+  nullifier,
 }: {
   depositSuccess: (secret: `0x${string}`, nullifier: `0x${string}`) => void;
+  secret: `0x${string}`;
+  nullifier: `0x${string}`;
 }) => {
-  // TODO: update secret and nullifier after deposit
-  const [secret, setSecret] = useState(SECRET);
-  const [nullifier, setNullifier] = useState(NULLIFIER);
-
-  const { config, error, isError } = usePrepareLitTornadoDeposit({
+  const { config } = usePrepareLitTornadoDeposit({
     address: MIXINER_ADDRESS,
     args: [generateCommitment(secret, nullifier)],
     value: DENOMINATION,
-    // enabled: Boolean(),
   });
 
   const { data, write, status } = useLitTornadoDeposit(config);
-  // console.log({ status });
-  // console.log({ data });
 
   const {
     data: txReceipt,
-    isError: txError,
+    // isError: txError,
     status: txStatus,
   } = useWaitForTransaction({
     hash: data?.hash,
   });
 
-  // console.log({ txReceipt });
+  txReceipt && console.log({ txReceipt });
 
   useEffect(() => {
     if (txReceipt?.status === "success") {

@@ -6,9 +6,11 @@ import toast from "react-hot-toast";
 export const DepositSuccessModal = ({
   setShowModal,
   message,
+  onCloseDepositModal,
 }: {
   setShowModal: Dispatch<SetStateAction<boolean>>;
   message: string;
+  onCloseDepositModal: () => void;
 }) => {
   const [copied, setCopied] = useState(false);
   return (
@@ -43,6 +45,7 @@ export const DepositSuccessModal = ({
               className="btn"
               disabled={!copied}
               onClick={() => {
+                onCloseDepositModal();
                 setShowModal(false);
               }}
             >

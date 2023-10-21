@@ -8,7 +8,7 @@ import { DepositSuccessModal } from "./DepositSuccessModal";
 import { DENOMINATION, NOTE, RELAYER_FEE } from "@/constants";
 import { formatEther } from "viem";
 import { polygonMumbai } from "wagmi/chains";
-import { isNote } from "@/utils";
+import { generateRandom32BytesHex, isNote } from "@/utils";
 import toast from "react-hot-toast";
 
 const enum Tab {
@@ -16,13 +16,23 @@ const enum Tab {
   Withdraw = "withdraw",
 }
 
+const SECRET = generateRandom32BytesHex();
+const NULLIFIER = generateRandom32BytesHex();
+
 export const Main = () => {
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork({ chainId: polygonMumbai.id });
 
+  const [secret, setSecret] = useState(SECRET);
+  const [nullifier, setNullifier] = useState(NULLIFIER);
+
+  const onCloseDepositModal = () => {
+    setSecret(generateRandom32BytesHex());
+    setNullifier(generateRandom32BytesHex());
+  };
+
   useEffect(() => {
     if (chain && switchNetwork) {
-      // console.log("switching network");
       switchNetwork();
     }
   }, [chain, switchNetwork]);
@@ -147,7 +157,11 @@ export const Main = () => {
       )}
       {address ? (
         activeTab == Tab.Deposit ? (
-          <DepositButton depositSuccess={depositSuccess} />
+          <DepositButton
+            depositSuccess={depositSuccess}
+            secret={secret}
+            nullifier={nullifier}
+          />
         ) : (
           <WithdrawButton note={note} recipientAddress={recipientAddress} />
         )
@@ -161,6 +175,7 @@ export const Main = () => {
         <DepositSuccessModal
           setShowModal={setShowModal}
           message={commitmentMessage}
+          onCloseDepositModal={onCloseDepositModal}
         />
       )}
     </div>
