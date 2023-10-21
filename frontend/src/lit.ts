@@ -49,20 +49,16 @@ export const PROOF_LIT_ACTION_CODE = `
   var hashLeftRight = (left, right) => {
     return ethers.utils.solidityKeccak256(["bytes32", "bytes32"], [left, right]);
   };
-  function indexToPathIndices(index, height) {
-    const pathIndices = [];
-    const binaryIndex = index.toString(2).padStart(height, "0");
-    for (const char of binaryIndex) {
-      pathIndices.push(char === "1");
-    }
-    return pathIndices;
+  function indexToPathIndices(index, treeHeight) {
+    const binaryIndex = index.toString(2).padStart(treeHeight, "0");
+    return Array.from(binaryIndex).reverse().map((char) => char === "0");
   }
   function verifyMerkleProof(leaf, root, pathElements, leafIndex, treeHeight) {
     const pathIndices = indexToPathIndices(leafIndex, treeHeight);
     let computedHash = leaf;
     for (let i = 0; i < pathElements.length; i++) {
       const sibling = pathElements[i];
-      const isLeft = !pathIndices[i];
+      const isLeft = pathIndices[i];
       computedHash = isLeft ? hashLeftRight(computedHash, sibling) : hashLeftRight(sibling, computedHash);
     }
     return computedHash === root;
@@ -91,6 +87,7 @@ export const PROOF_LIT_ACTION_CODE = `
         publicKey,
         sigName
       });
+      // LitActions.setResponse({ response: JSON.stringify(sigShare) });
     } else {
       console.error("Proof not verified");
     }

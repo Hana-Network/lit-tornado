@@ -10,13 +10,11 @@ const hashLeftRight = (left: `0x${string}`, right: `0x${string}`) => {
   return ethers.utils.solidityKeccak256(["bytes32", "bytes32"], [left, right]);
 };
 
-function indexToPathIndices(index: number, height: number): boolean[] {
-  const pathIndices: boolean[] = [];
-  const binaryIndex = index.toString(2).padStart(height, "0");
-  for (const char of binaryIndex) {
-    pathIndices.push(char === "1");
-  }
-  return pathIndices;
+function indexToPathIndices(index: number, treeHeight: number) {
+  const binaryIndex = index.toString(2).padStart(treeHeight, "0");
+  return Array.from(binaryIndex)
+    .reverse()
+    .map((char) => char === "0");
 }
 
 export function verifyMerkleProof(
@@ -31,7 +29,7 @@ export function verifyMerkleProof(
 
   for (let i = 0; i < pathElements.length; i++) {
     const sibling = pathElements[i];
-    const isLeft = !pathIndices[i];
+    const isLeft = pathIndices[i];
 
     computedHash = isLeft
       ? hashLeftRight(computedHash, sibling)

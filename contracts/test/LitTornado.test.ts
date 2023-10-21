@@ -304,6 +304,8 @@ describe("LitTornado", function () {
         generateRandom32BytesHex(),
         generateRandom32BytesHex()
       );
+      // const commitment2 =
+      //   "0xec4c70e5233db463d65d0e5a07af8210654d8534e7ecc2183592ee3f6d14f7ee";
       await litTornado.write.deposit([commitment2], { value: denomination });
 
       const commitment3 = generateCommitment(
@@ -325,6 +327,46 @@ describe("LitTornado", function () {
       expect(
         verifyMerkleProof(commitment, root, proof, leafIndex, merkleTreeHeight)
       ).to.equal(true);
+
+      const proof2 = tree.getHexProof(commitment2) as `0x${string}`[];
+      // console.log({ treeRoot });
+      // console.log({ root });
+      // console.log({ commitment2 });
+      // console.log({ leaves });
+      // console.log({ tree: tree.getHexLeaves() });
+      // console.log({ proof2 });
+      const leafIndex2 = leaves.indexOf(commitment2);
+      expect(
+        verifyMerkleProof(
+          commitment2,
+          root,
+          proof2,
+          leafIndex2,
+          merkleTreeHeight
+        )
+      ).to.equal(true);
+
+      const proof3 = tree.getHexProof(commitment3) as `0x${string}`[];
+      const leafIndex3 = leaves.indexOf(commitment3);
+      expect(
+        verifyMerkleProof(
+          commitment3,
+          root,
+          proof3,
+          leafIndex3,
+          merkleTreeHeight
+        )
+      ).to.equal(true);
+
+      expect(
+        verifyMerkleProof(
+          commitment3,
+          root,
+          proof2,
+          leafIndex3,
+          merkleTreeHeight
+        )
+      ).to.equal(false);
     });
   });
 
