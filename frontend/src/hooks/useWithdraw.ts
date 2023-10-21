@@ -23,7 +23,8 @@ import {
 import { generateCommitment } from "@/utils";
 import { useWaitForTransaction, usePublicClient } from "wagmi";
 import { useState } from "react";
-import { checkAndSignAuthMessage } from "@lit-protocol/lit-node-client";
+// import { checkAndSignAuthMessage } from "@lit-protocol/lit-node-client";
+import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import toast from "react-hot-toast";
 import { PROOF_LIT_ACTION_CODE, RELAYER_LIT_ACTION_CODE } from "@/lit";
 import { useMerkleTree } from "@/hooks/useMerkleTree";
@@ -67,14 +68,14 @@ export const useWithdraw = ({
   const signMessageByPkp = async () => {
     setShowLoading(true);
     try {
-      const litNodeClient = new LitNodeClient({
+      const litNodeClient = new LitJsSdk.LitNodeClient({
         litNetwork: "serrano",
         // litNetwork: "cayenne",
         debug: true,
       });
       await litNodeClient.connect();
 
-      const authSig = await checkAndSignAuthMessage({
+      const authSig = await LitJsSdk.checkAndSignAuthMessage({
         chain: "mumbai",
         switchChain: true,
       });
