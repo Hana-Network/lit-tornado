@@ -87,7 +87,7 @@ export const useWithdraw = ({
 
       const authSig = await LitJsSdk.checkAndSignAuthMessage({
         chain: "mumbai",
-        switchChain: true,
+        // switchChain: true,
       });
       // console.log("authSig:", authSig);
 
