@@ -36,7 +36,7 @@ export const DepositButton = ({
     hash: data?.hash,
   });
 
-  console.log({ txReceipt });
+  // console.log({ txReceipt });
 
   useEffect(() => {
     if (txReceipt?.status === "success") {

@@ -5,7 +5,7 @@ import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 import { DepositButton } from "./DepositButton";
 import { WithdrawButton } from "./WithdrawButton";
 import { DepositSuccessModal } from "./DepositSuccessModal";
-import { DENOMINATION, NOTE, RELAYER_ADDRESS, RELAYER_FEE } from "@/constants";
+import { DENOMINATION, NOTE, RELAYER_FEE } from "@/constants";
 import { formatEther } from "viem";
 import { polygonMumbai } from "wagmi/chains";
 import { isNote } from "@/utils";
@@ -18,12 +18,11 @@ const enum Tab {
 
 export const Main = () => {
   const { chain } = useNetwork();
-  const { chains, error, isLoading, pendingChainId, switchNetwork } =
-    useSwitchNetwork({ chainId: polygonMumbai.id });
+  const { switchNetwork } = useSwitchNetwork({ chainId: polygonMumbai.id });
 
   useEffect(() => {
     if (chain && switchNetwork) {
-      console.log("switching network");
+      // console.log("switching network");
       switchNetwork();
     }
   }, [chain, switchNetwork]);
@@ -98,13 +97,6 @@ export const Main = () => {
             <div className="badge badge-outline badge-primary">
               {formatEther(RELAYER_FEE)} {polygonMumbai.nativeCurrency.symbol}
             </div>
-            {/* </div> */}
-            {/* <div className="prose">
-              <span className="text-sm">Address: </span>
-              <div className="badge badge-outline badge-primary">
-                {RELAYER_ADDRESS}
-              </div>
-            </div> */}
           </div>
           <div className="mb-6">
             <label className="block text-base-content text-opacity-medium text-sm mb-2">

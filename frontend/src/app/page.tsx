@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
-import { WagmiConfig, useAccount } from "wagmi";
-import { goerli, polygonMumbai } from "wagmi/chains";
+import { WagmiConfig } from "wagmi";
+import { polygonMumbai } from "wagmi/chains";
 import { Header } from "@/components/Header";
 import { Main } from "@/components/Main";
 import { Toaster } from "react-hot-toast";
@@ -34,6 +34,7 @@ export default function Home() {
   useEffect(() => {
     setReady(true);
   }, []);
+
   return (
     <div className="min-h-screen bg-base-100 flex flex-col">
       <Toaster position="top-right" />
