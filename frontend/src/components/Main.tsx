@@ -1,7 +1,7 @@
 "use client";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useState } from "react";
-import { useAccount } from "wagmi";
+import { useEffect, useState } from "react";
+import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 import { DepositButton } from "./DepositButton";
 import { WithdrawButton } from "./WithdrawButton";
 import { DepositSuccessModal } from "./DepositSuccessModal";
@@ -17,6 +17,17 @@ const enum Tab {
 }
 
 export const Main = () => {
+  const { chain } = useNetwork();
+  const { chains, error, isLoading, pendingChainId, switchNetwork } =
+    useSwitchNetwork({ chainId: polygonMumbai.id });
+
+  useEffect(() => {
+    if (chain && switchNetwork) {
+      console.log("switching network");
+      switchNetwork();
+    }
+  }, [chain, switchNetwork]);
+
   const [activeTab, setActiveTab] = useState<Tab>(Tab.Deposit);
   const { address, isConnecting } = useAccount();
   const { open } = useWeb3Modal();
@@ -106,7 +117,6 @@ export const Main = () => {
               value={recipientAddress || ""}
               onChange={(e) => {
                 const value = e.target.value;
-                console.log(value.length);
                 if (!value.startsWith("0x") || value.length !== 42) {
                   toast.error("Invalid address!");
                   return;
