@@ -1,9 +1,9 @@
 import { parseEther } from "viem";
 
+// TODO: fix typo
 export const MIXINER_ADDRESS = "0x2897217b19b1aa6a7f7579dc4e29218318272b06";
 export const DENOMINATION = parseEther("0.1");
 export const RELAYER_FEE = parseEther("0.01");
-export const RELAYER_ADDRESS = "0x951444F56EF94FeC42e8cDBeDef1A4Dc1D1ea63B";
 export const SAMPLE_SECRET =
   "0x9c1a3b673a4e4820143acbddb65082f13530a972df68a1eec1f5c09d70d1ca34";
 
@@ -44,8 +44,19 @@ export type NOTE = {
   nullifier: `0x${string}`;
 };
 
+export type TxParams = {
+  nonce: number;
+  gasPrice: BigInt;
+  gasLimit: BigInt;
+  to: `0x${string}`;
+  chainId: number;
+  data: `0x${string}`;
+};
 export const PKP_NFT_PUBLIC_KEY =
   "0x04d8d2d47a3b590ff1127d57ee030bfc7198fac82fef265a0cd86c568e585c7419ddf5a9738d5df8a431db52b59c0c7c5c69cc001d8838038597f1c42c0db195a9";
+export const RELAYER_PKP_PUBLIC_KEY =
+  "047c0c4e58c506f4dcf6a4be5f59ed45c2c9d369eae6d6583532e7e73c27d093a8eee880c766f7b238ac052c68f0e4eb1c5115fbd7a85cd759f37dc85f8208aea0";
+export const RELAYER_PKP_ADDRESS = "0x991152Ad9AAea9894125063748f1a99CBC182746";
 // QmQ5yzoCvYcdW6kBqUnFXx6ZNJzQRAsthDvthutwoPggrL
 // pkpPublicKey 0x04d8d2d47a3b590ff1127d57ee030bfc7198fac82fef265a0cd86c568e585c7419ddf5a9738d5df8a431db52b59c0c7c5c69cc001d8838038597f1c42c0db195a9
 // pkpEthAddress 0x131cEc33bDd29DdA9213B9e65F9666231E601DFF

@@ -95,3 +95,11 @@ export const PROOF_LIT_ACTION_CODE = `
   generateProofSignature();
 })();
 `;
+
+export const RELAYER_LIT_ACTION_CODE = `
+const go = async () => {  
+  const sigShare = await LitActions.signEcdsa({ toSign, publicKey , sigName });
+};
+
+go();
+`;

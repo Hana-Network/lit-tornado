@@ -2,27 +2,43 @@
 import {
   MIXINER_ADDRESS,
   NOTE,
-  RELAYER_ADDRESS,
   RELAYER_FEE,
+  RELAYER_PKP_ADDRESS,
+  RELAYER_PKP_PUBLIC_KEY,
   SAMPLE_NULLIFIER,
   TREE_HEIGHT,
+  TxParams,
 } from "@/constants";
-
-import { encodePacked, keccak256, toBytes, formatEther } from "viem";
+import { polygonMumbai } from "wagmi/chains";
+import {
+  encodePacked,
+  keccak256,
+  toBytes,
+  formatEther,
+  encodeFunctionData,
+  serializeTransaction,
+  TransactionSerializable,
+} from "viem";
 import {
   useLitTornadoWithdraw,
   useMerkleTreeWithHistoryGetLastRoot,
   usePrepareLitTornadoWithdraw,
   useLitTornadoVerifier,
   useMerkleTreeWithHistoryGetLeaves,
+  litTornadoABI,
 } from "@/contracts";
 import { generateCommitment } from "@/utils";
-import { useAccount, useSignMessage, useWaitForTransaction } from "wagmi";
+import {
+  useAccount,
+  useSignMessage,
+  useWaitForTransaction,
+  usePublicClient,
+} from "wagmi";
 import { useEffect, useState } from "react";
 import { checkAndSignAuthMessage } from "@lit-protocol/lit-node-client";
 import toast from "react-hot-toast";
 import { useReward } from "react-rewards";
-import { PROOF_LIT_ACTION_CODE } from "@/lit";
+import { PROOF_LIT_ACTION_CODE, RELAYER_LIT_ACTION_CODE } from "@/lit";
 import { useMerkleTree } from "@/hooks/useMerkleTree";
 
 export const WithdrawButton = ({
@@ -32,6 +48,7 @@ export const WithdrawButton = ({
   note?: NOTE;
   recipientAddress?: `0x${string}`;
 }) => {
+  const publicClient = usePublicClient();
   // const { address, isConnecting } = useAccount();
   const { reward } = useReward("withdrawReward", "confetti", {
     lifetime: 1000,
@@ -59,7 +76,7 @@ export const WithdrawButton = ({
 
   const nullifierHash = note && keccak256(note.nullifier);
   // const recipientAddress = address;
-  const relayerAddress = RELAYER_ADDRESS;
+  const relayerAddress = RELAYER_PKP_ADDRESS;
   const relayerFee = RELAYER_FEE;
 
   // if (!root || !nullifierHash || !recipientAddress || !relayerAddress || !fee) {
@@ -151,6 +168,7 @@ export const WithdrawButton = ({
 
       const messageHash = keccak256(message);
 
+      // Prover Lit Action
       const results = await litNodeClient.executeJs({
         // ipfsId: "Qmf6oYS7nNPV8ZGTk8KdifbPQCa61GwjaMJqXDGac3pnnN",
         authSig,
@@ -172,13 +190,6 @@ export const WithdrawButton = ({
             // passing BigNumber causes error
             relayerFee: formatEther(relayerFee),
           },
-          // data: {
-          //   commitment,
-          //   treeRoot,
-          //   proof,
-          //   leafIndex: leaves.indexOf(commitment),
-          //   merkleTreeHeight: TREE_HEIGHT,
-          // },
           publicKey:
             "0x042034f83acf8e7c97118b0499073e964a93b69b5e1ad94c3627fd8665c4affb2086c59b729ac62a3fa77143a7006fd2f0e2b7e3d7253479346ba4583076f22a51",
           sigName: "sig1",
@@ -190,11 +201,70 @@ export const WithdrawButton = ({
       const signatures = results.signatures;
       const sig = signatures.sig1;
 
-      setSignMessageData(sig.signature);
+      // setSignMessageData(sig.signature);
       toast.success("PKP Sign message success!");
+
+      // TODO: Relayer Lit Action
+
+      const relayerTxRequest = await publicClient.prepareTransactionRequest({
+        account: relayerAddress,
+        to: MIXINER_ADDRESS,
+        data: encodeFunctionData({
+          abi: litTornadoABI,
+          functionName: "withdraw",
+          args: [
+            sig.signature,
+            treeRoot,
+            nullifierHash,
+            recipientAddress,
+            relayerAddress,
+            relayerFee,
+          ],
+        }),
+      });
+      console.log({ relayerTxRequest });
+
+      const relayerRawTx = {
+        chainId: polygonMumbai.id,
+        gas: relayerTxRequest.gas,
+        maxFeePerGas: relayerTxRequest.maxFeePerGas,
+        maxPriorityFeePerGas: relayerTxRequest.maxPriorityFeePerGas,
+        nonce: relayerTxRequest.nonce,
+        to: relayerTxRequest.to,
+        data: relayerTxRequest.data,
+      };
+      const serializedRelayerTx = serializeTransaction(relayerRawTx);
+      const unsignedTxnHash = keccak256(serializedRelayerTx);
+      console.log({ unsignedTxnHash });
+
+      const relayerLitActionResults = await litNodeClient.executeJs({
+        authSig,
+        code: RELAYER_LIT_ACTION_CODE,
+        jsParams: {
+          toSign: toBytes(unsignedTxnHash),
+          sigName: "sig1",
+          publicKey: RELAYER_PKP_PUBLIC_KEY,
+        },
+      });
+
+      console.log("results", relayerLitActionResults);
+
+      const relayerTxSignature =
+        relayerLitActionResults.signatures.sig1.signature;
+
+      const serializedTx = serializeTransaction(relayerRawTx, {
+        r: relayerTxSignature.slice(0, 66),
+        s: ("0x" + relayerTxSignature.slice(66, 130)) as `0x${string}`,
+        v: BigInt("0x" + relayerTxSignature.slice(130, 132)),
+      });
+      const relayerTxHash = await publicClient.sendRawTransaction({
+        serializedTransaction: serializedTx,
+      });
+
+      console.log({ relayerTxHash });
     } catch (e) {
       console.log(e);
-      toast.error("PKP Sign message failed!");
+      toast.error("Withdrawal failed!");
     } finally {
       setShowLoading(false);
     }
@@ -233,9 +303,7 @@ export const WithdrawButton = ({
           status === "loading" ||
           txStatus === "loading"
         }
-        // https://github.com/wagmi-dev/wagmi/pull/2719
-        onClick={() => {
-          // (signMessage as any)({ message: { raw: messageHash } });
+        onClick={async () => {
           signMessageByPkp();
         }}
       >
