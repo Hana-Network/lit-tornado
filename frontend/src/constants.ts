@@ -44,14 +44,6 @@ export type NOTE = {
   nullifier: `0x${string}`;
 };
 
-export type TxParams = {
-  nonce: number;
-  gasPrice: BigInt;
-  gasLimit: BigInt;
-  to: `0x${string}`;
-  chainId: number;
-  data: `0x${string}`;
-};
 export const PKP_NFT_PUBLIC_KEY =
   "0x04d8d2d47a3b590ff1127d57ee030bfc7198fac82fef265a0cd86c568e585c7419ddf5a9738d5df8a431db52b59c0c7c5c69cc001d8838038597f1c42c0db195a9";
 export const RELAYER_PKP_PUBLIC_KEY =
