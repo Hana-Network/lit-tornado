@@ -22,7 +22,7 @@ import {
 } from "@/contracts";
 import { generateCommitment } from "@/utils";
 import { useWaitForTransaction, usePublicClient } from "wagmi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { checkAndSignAuthMessage } from "@lit-protocol/lit-node-client";
 import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import toast from "react-hot-toast";
@@ -32,9 +32,11 @@ import { useMerkleTree } from "@/hooks/useMerkleTree";
 export const useWithdraw = ({
   note,
   recipientAddress,
+  withdrawSuccess,
 }: {
   note?: NOTE;
   recipientAddress?: `0x${string}`;
+  withdrawSuccess: (txHash: `0x${string}`) => void;
 }) => {
   const [showLoading, setShowLoading] = useState(false);
   const publicClient = usePublicClient();
@@ -64,6 +66,14 @@ export const useWithdraw = ({
   } = useWaitForTransaction({
     hash: relayerTxHash,
   });
+
+  useEffect(() => {
+    if (relayerTxReceipt?.status === "success" && relayerTxHash) {
+      withdrawSuccess(relayerTxHash);
+    } else if (relayerTxReceipt?.status === "reverted") {
+      toast.error("Withdraw failed!");
+    }
+  }, [relayerTxReceipt?.status]);
 
   const signMessageByPkp = async () => {
     setShowLoading(true);
@@ -202,6 +212,5 @@ export const useWithdraw = ({
   return {
     showLoading: relayerTxStatus === "loading" || showLoading,
     signMessageByPkp,
-    relayerTxReceipt,
   };
 };

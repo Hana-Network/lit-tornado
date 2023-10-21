@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import toast from "react-hot-toast";
 
@@ -40,7 +40,6 @@ export const DepositSuccessModal = ({
         </div>
         <div className="modal-action">
           <div>
-            {/* if there is a button in form, it will close the modal */}
             <button
               className="btn"
               disabled={!copied}

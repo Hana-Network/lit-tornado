@@ -10,6 +10,8 @@ import { formatEther } from "viem";
 import { polygonMumbai } from "wagmi/chains";
 import { generateRandom32BytesHex, isNote } from "@/utils";
 import toast from "react-hot-toast";
+import { useReward } from "react-rewards";
+import { WithdrawSuccessModal } from "./WithdrawSuccessModal";
 
 const enum Tab {
   Deposit = "deposit",
@@ -40,7 +42,9 @@ export const Main = () => {
   const [activeTab, setActiveTab] = useState<Tab>(Tab.Deposit);
   const { address, isConnecting } = useAccount();
   const { open } = useWeb3Modal();
-  const [showModal, setShowModal] = useState(false);
+  const [showDepositSuccessModal, setShowDepositSuccessModal] = useState(false);
+  const [showWithdrawSuccessModal, setShowWithdrawSuccessModal] =
+    useState(false);
   const [commitmentMessage, setCommitmentMessage] = useState("");
   const [note, setNote] = useState<NOTE>();
   const [recipientAddress, setRecipientAddress] = useState<`0x${string}`>();
@@ -49,7 +53,19 @@ export const Main = () => {
     console.log("deposit success");
     console.log(secret, nullifier);
     setCommitmentMessage(JSON.stringify({ secret, nullifier }));
-    setShowModal(true);
+    setShowDepositSuccessModal(true);
+  };
+  const { reward } = useReward("withdrawReward", "confetti", {
+    lifetime: 1000,
+    startVelocity: 20,
+    zIndex: 1000,
+  });
+  const [withdrawTxHash, setWithdrawTxHash] = useState<`0x${string}`>();
+  const withdrawSuccess = (txHash: `0x${string}`) => {
+    toast.success("Withdraw successful!");
+    reward();
+    setWithdrawTxHash(txHash);
+    setShowWithdrawSuccessModal(true);
   };
 
   return (
@@ -163,7 +179,11 @@ export const Main = () => {
             nullifier={nullifier}
           />
         ) : (
-          <WithdrawButton note={note} recipientAddress={recipientAddress} />
+          <WithdrawButton
+            note={note}
+            recipientAddress={recipientAddress}
+            withdrawSuccess={withdrawSuccess}
+          />
         )
       ) : (
         <button className="btn btn-primary w-full" onClick={() => open()}>
@@ -171,11 +191,17 @@ export const Main = () => {
           Connect
         </button>
       )}
-      {showModal && (
+      {showDepositSuccessModal && (
         <DepositSuccessModal
-          setShowModal={setShowModal}
+          setShowModal={setShowDepositSuccessModal}
           message={commitmentMessage}
           onCloseDepositModal={onCloseDepositModal}
+        />
+      )}
+      {showWithdrawSuccessModal && withdrawTxHash && (
+        <WithdrawSuccessModal
+          setShowModal={setShowWithdrawSuccessModal}
+          txHash={withdrawTxHash}
         />
       )}
     </div>

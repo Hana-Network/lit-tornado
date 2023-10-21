@@ -1,35 +1,21 @@
 "use client";
 import { NOTE } from "@/constants";
-import { useEffect } from "react";
-import toast from "react-hot-toast";
-import { useReward } from "react-rewards";
 import { useWithdraw } from "@/hooks/useWithdraw";
 
 export const WithdrawButton = ({
   note,
   recipientAddress,
+  withdrawSuccess,
 }: {
   note?: NOTE;
   recipientAddress?: `0x${string}`;
+  withdrawSuccess: (txHash: `0x${string}`) => void;
 }) => {
-  const { reward } = useReward("withdrawReward", "confetti", {
-    lifetime: 1000,
-    startVelocity: 20,
-  });
-
-  const { showLoading, signMessageByPkp, relayerTxReceipt } = useWithdraw({
+  const { showLoading, signMessageByPkp } = useWithdraw({
     note,
     recipientAddress,
+    withdrawSuccess,
   });
-
-  useEffect(() => {
-    if (relayerTxReceipt?.status === "success") {
-      toast.success("Withdraw successful!");
-      reward();
-    } else if (relayerTxReceipt?.status === "reverted") {
-      toast.error("Withdraw failed!");
-    }
-  }, [relayerTxReceipt?.status]);
 
   return (
     <>
