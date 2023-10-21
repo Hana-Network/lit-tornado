@@ -1,6 +1,9 @@
 import {
   MIXINER_ADDRESS,
   NOTE,
+  PROVER_ACTION_IPFS_CID,
+  PROVER_PKP_PUBLIC_KEY,
+  RELAYER_ACTION_IPFS_CID,
   RELAYER_FEE,
   RELAYER_PKP_ADDRESS,
   RELAYER_PKP_PUBLIC_KEY,
@@ -26,7 +29,7 @@ import { useEffect, useState } from "react";
 // import { checkAndSignAuthMessage } from "@lit-protocol/lit-node-client";
 import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import toast from "react-hot-toast";
-import { PROOF_LIT_ACTION_CODE, RELAYER_LIT_ACTION_CODE } from "@/lit";
+// import { PROOF_LIT_ACTION_CODE, RELAYER_LIT_ACTION_CODE } from "@/lit";
 import { useMerkleTree } from "@/hooks/useMerkleTree";
 
 export const useWithdraw = ({
@@ -87,7 +90,7 @@ export const useWithdraw = ({
 
       const authSig = await LitJsSdk.checkAndSignAuthMessage({
         chain: "mumbai",
-        // switchChain: true,
+        switchChain: true,
       });
       // console.log("authSig:", authSig);
 
@@ -112,9 +115,9 @@ export const useWithdraw = ({
 
       // Prover Lit Action
       const results = await litNodeClient.executeJs({
-        // ipfsId: "Qmf6oYS7nNPV8ZGTk8KdifbPQCa61GwjaMJqXDGac3pnnN",
+        ipfsId: PROVER_ACTION_IPFS_CID,
         authSig,
-        code: PROOF_LIT_ACTION_CODE,
+        // code: PROOF_LIT_ACTION_CODE,
         // Lit Action does not have the concept of private input and public input. I just borrowed those names from zero-knowledge proofs.
         jsParams: {
           privateInputs: {
@@ -132,8 +135,7 @@ export const useWithdraw = ({
             // passing BigNumber causes error
             relayerFee: formatEther(relayerFee),
           },
-          publicKey:
-            "0x042034f83acf8e7c97118b0499073e964a93b69b5e1ad94c3627fd8665c4affb2086c59b729ac62a3fa77143a7006fd2f0e2b7e3d7253479346ba4583076f22a51",
+          publicKey: PROVER_PKP_PUBLIC_KEY,
           sigName: "sig1",
           toSign: toBytes(messageHash),
         },
@@ -177,7 +179,8 @@ export const useWithdraw = ({
 
       const relayerLitActionResults = await litNodeClient.executeJs({
         authSig,
-        code: RELAYER_LIT_ACTION_CODE,
+        ipfsId: RELAYER_ACTION_IPFS_CID,
+        // code: RELAYER_LIT_ACTION_CODE,
         jsParams: {
           toSign: toBytes(unsignedTxnHash),
           sigName: "sig1",

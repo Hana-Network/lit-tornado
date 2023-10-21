@@ -1,3 +1,6 @@
+/**
+ * NAME: signRelayerTransaction
+ */
 const signRelayerTransaction = async () => {
   try {
     const sigShare = await LitActions.signEcdsa({
