@@ -66,7 +66,7 @@ Learn more about our project and its journey in the ETHGlobal hackathon by visit
 We have deployed our smart contract on Scroll Sepolia network. 
 
 ### Smart Contract Code
-Our smart contract code can be found and verified [here](https://sepolia-blockscout.scroll.io/address/0x71073366a8B61b1b6634554a9e24cd07B31CB7D4#code).
+Our smart contract code can be found and verified [here](https://sepolia-blockscout.scroll.io/address/0x71073366a8B61b1b6634554a9e24cd07B31CB7D4/contracts#address-tabs).
 
 ### Working Demo on Scroll Sepolia
-You can also experience our working demo on Scroll Sepolia [here]().
+You can also experience our working demo on Scroll Sepolia [here](https://lit-tornado-git-scroll-enu-kuro.vercel.app/).
