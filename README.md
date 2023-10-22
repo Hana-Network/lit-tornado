@@ -11,19 +11,16 @@ With Lit Tornado, users can make deposits in a manner similar to Tornado Cash, w
 
 
 ## Implementation Comparison: From Zero-Knowledge Proofs to Lit Actions
-Below are the links to compare the implementation of Tornado Cash's zero-knowledge circuits and our Lit Action.
 
+### Zero-Knowledge Proof Circuit and Lit Action Comparison:  
 - Here is the code for Tornado Cash's zero-knowledge circuits:  
 [Tornado Cash ZK Circuits](https://github.com/tornadocash/tornado-core/tree/master/circuits)
 
 - We have ported this to a Lit Action here:  
 [Lit Tornado Generate Proof Signature Action](https://github.com/Hana-Network/lit-tornado/blob/main/lit/lit_actions/src/generateProofSignature.action.ts)
 
-This comparison clearly showcases the innovative approach we took in migrating from complex zero-knowledge proof circuits to the streamlined and efficient process using Lit Actions and PKPs.
+This comparison clearly showcases the innovative approach we took in migrating from complex zero-knowledge proofs to the streamlined and efficient process using Lit Actions and PKPs.
 
-
-## Implementation Comparison: From Zero-Knowledge Proofs to Lit Actions
-In this section, we will compare the implementation of Tornado Cash's smart contracts and zero-knowledge proof circuits with our Lit Tornado smart contracts and Lit Actions.
 
 ### Smart Contract Comparison:
 - Here is the withdraw function in Tornado Cash's smart contract:  
@@ -34,14 +31,6 @@ In this section, we will compare the implementation of Tornado Cash's smart cont
 
 At first glance, the two functions may appear almost identical. However, Tornado Cash's verifyProof is for zero-knowledge proof, whereas Lit Tornado's verifyMessage is for signature verification. This results in a significant difference in computation costs.
 
-### Zero-Knowledge Proof Circuit and Lit Action Comparison:  
-- Here is the code for Tornado Cash's zero-knowledge circuits:  
-[Tornado Cash ZK Circuits](https://github.com/tornadocash/tornado-core/tree/master/circuits)
-
-- We have ported this to a Lit Action here:  
-[Lit Tornado Generate Proof Signature Action](https://github.com/Hana-Network/lit-tornado/blob/main/lit/lit_actions/src/generateProofSignature.action.ts)
-
-This comparison clearly showcases the innovative approach we took in migrating from complex zero-knowledge proofs to the streamlined and efficient process using Lit Actions and PKPs.
 
 
 ## Lit Action Relayer: A Strong Caution on Security
