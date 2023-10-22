@@ -8,7 +8,7 @@ export const WithdrawSuccessModal = ({
   setShowModal: Dispatch<SetStateAction<boolean>>;
   txHash: `0x${string}`;
 }) => {
-  const explorerLink = `https://mumbai.polygonscan.com/tx/${txHash}`;
+  const explorerLink = `https://sepolia.scrollscan.dev/tx/${txHash}`;
   return (
     <dialog id="my_daisy-modal_1" className="daisy-modal daisy-modal-open">
       <div className="daisy-modal-box">

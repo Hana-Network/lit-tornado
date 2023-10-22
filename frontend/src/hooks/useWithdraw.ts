@@ -9,7 +9,7 @@ import {
   RELAYER_PKP_PUBLIC_KEY,
   TREE_HEIGHT,
 } from "@/constants";
-import { polygonMumbai } from "wagmi/chains";
+import { scrollSepolia } from "wagmi/chains";
 import {
   encodePacked,
   keccak256,
@@ -89,8 +89,8 @@ export const useWithdraw = ({
       await litNodeClient.connect();
 
       const authSig = await LitJsSdk.checkAndSignAuthMessage({
-        chain: "mumbai",
-        switchChain: true,
+        chain: "scrollAlphaTestnet",
+        // switchChain: true,
       });
       // console.log("authSig:", authSig);
 
@@ -150,6 +150,7 @@ export const useWithdraw = ({
       const relayerTxRequest = await publicClient.prepareTransactionRequest({
         account: relayerAddress,
         to: MIXINER_ADDRESS,
+        chain: scrollSepolia,
         data: encodeFunctionData({
           abi: litTornadoABI,
           functionName: "withdraw",
@@ -163,13 +164,14 @@ export const useWithdraw = ({
           ],
         }),
       });
-      // console.log({ relayerTxRequest });
+      console.log({ relayerTxRequest });
 
       const relayerRawTx = {
-        chainId: polygonMumbai.id,
+        chainId: scrollSepolia.id,
         gas: relayerTxRequest.gas,
-        maxFeePerGas: relayerTxRequest.maxFeePerGas,
-        maxPriorityFeePerGas: relayerTxRequest.maxPriorityFeePerGas,
+        gasPrice: relayerTxRequest.gasPrice,
+        // maxFeePerGas: relayerTxRequest.maxFeePerGas,
+        // maxPriorityFeePerGas: relayerTxRequest.maxPriorityFeePerGas,
         nonce: relayerTxRequest.nonce,
         to: relayerTxRequest.to,
         data: relayerTxRequest.data,

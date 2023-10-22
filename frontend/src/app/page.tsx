@@ -3,12 +3,12 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
 import { WagmiConfig } from "wagmi";
-import { polygonMumbai } from "wagmi/chains";
+import { scrollSepolia } from "wagmi/chains";
 import { Header } from "@/components/Header";
 import { Main } from "@/components/Main";
 import { Toaster } from "react-hot-toast";
 
-const chains = [polygonMumbai];
+const chains = [scrollSepolia];
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || "";
 
 const metadata = {
@@ -25,7 +25,7 @@ createWeb3Modal({
   wagmiConfig,
   projectId,
   chains,
-  defaultChain: polygonMumbai,
+  defaultChain: scrollSepolia,
   themeMode: "light",
 });
 

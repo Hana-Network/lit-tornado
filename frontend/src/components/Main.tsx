@@ -7,7 +7,7 @@ import { WithdrawButton } from "./WithdrawButton";
 import { DepositSuccessModal } from "./DepositSuccessModal";
 import { DENOMINATION, NOTE, RELAYER_FEE } from "@/constants";
 import { formatEther } from "viem";
-import { polygonMumbai } from "wagmi/chains";
+import { scrollSepolia } from "wagmi/chains";
 import { generateRandom32BytesHex, isNote } from "@/utils";
 import toast from "react-hot-toast";
 import { useReward } from "react-rewards";
@@ -23,7 +23,7 @@ const NULLIFIER = generateRandom32BytesHex();
 
 export const Main = () => {
   const { chain } = useNetwork();
-  const { switchNetwork } = useSwitchNetwork({ chainId: polygonMumbai.id });
+  const { switchNetwork } = useSwitchNetwork({ chainId: scrollSepolia.id });
 
   const [secret, setSecret] = useState(SECRET);
   const [nullifier, setNullifier] = useState(NULLIFIER);
@@ -99,7 +99,7 @@ export const Main = () => {
           Token
         </label>
         <div className="daisy-badge daisy-badge-outline daisy-badge-primary">
-          {polygonMumbai.nativeCurrency.symbol}
+          {scrollSepolia.nativeCurrency.symbol}
         </div>
       </div>
 
@@ -109,7 +109,7 @@ export const Main = () => {
         </label>
         <div className="daisy-badge daisy-badge-outline daisy-badge-primary">{`${formatEther(
           DENOMINATION
-        )} ${polygonMumbai.nativeCurrency.symbol}`}</div>
+        )} ${scrollSepolia.nativeCurrency.symbol}`}</div>
       </div>
 
       {activeTab === Tab.Withdraw && (
@@ -121,7 +121,7 @@ export const Main = () => {
             {/* <div className="prose">
               <span className="text-sm">Fee: </span> */}
             <div className="daisy-badge daisy-badge-outline daisy-badge-primary">
-              {formatEther(RELAYER_FEE)} {polygonMumbai.nativeCurrency.symbol}
+              {formatEther(RELAYER_FEE)} {scrollSepolia.nativeCurrency.symbol}
             </div>
           </div>
           <div className="mb-6">

@@ -1,9 +1,9 @@
 import { parseEther } from "viem";
 
 // TODO: fix typo
-export const MIXINER_ADDRESS = "0xf168fcbcf9b861b4f23e9502df5706de2ce73c06";
-export const DENOMINATION = parseEther("0.1");
-export const RELAYER_FEE = parseEther("0.01");
+export const MIXINER_ADDRESS = "0x71073366a8b61b1b6634554a9e24cd07b31cb7d4";
+export const DENOMINATION = parseEther("0.01");
+export const RELAYER_FEE = parseEther("0.001");
 export const SAMPLE_SECRET =
   "0x9c1a3b673a4e4820143acbddb65082f13530a972df68a1eec1f5c09d70d1ca34";
 

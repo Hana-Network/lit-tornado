@@ -5,6 +5,7 @@ import { generateCommitment } from "@/utils";
 import { useEffect } from "react";
 import { useWaitForTransaction } from "wagmi";
 import toast from "react-hot-toast";
+import { scrollSepolia } from "wagmi/chains";
 
 export const DepositButton = ({
   depositSuccess,
@@ -41,7 +42,7 @@ export const DepositButton = ({
     if (prepareError) {
       console.log(prepareError);
       toast.error(
-        "An error has occurred.\nPlease check if the connected account holds 1Matic or more.",
+        `An error has occurred.\nPlease check if the connected account holds 0.1 ${scrollSepolia.nativeCurrency.symbol} or more.`,
         { duration: 5000 }
       );
     }
