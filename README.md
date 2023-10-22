@@ -54,6 +54,10 @@ The transaction content is created on the client side, and the Lit Action Relaye
 - The Lit Action code for the relayer can be found here:  
 [Relayer Lit Action Code](https://github.com/Hana-Network/lit-tornado/blob/main/lit/lit_actions/src/relayer.action.ts)
 
+## Live Demo
+Click [here](https://lit-tornado.vercel.app/) to access the live demo.
 
 
+## ETHGlobal Showcase
+Learn more about our project and its journey in the ETHGlobal hackathon by visiting our [showcase page](https://ethglobal.com/showcase/lit-tornado-9wokg).
 
