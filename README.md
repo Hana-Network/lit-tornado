@@ -61,3 +61,12 @@ Click [here](https://lit-tornado.vercel.app/) to access the live demo.
 ## ETHGlobal Showcase
 Learn more about our project and its journey in the ETHGlobal hackathon by visiting our [showcase page](https://ethglobal.com/showcase/lit-tornado-9wokg).
 
+
+## Scroll
+We have deployed our smart contract on Scroll Sepolia network. 
+
+### Smart Contract Code
+Our smart contract code can be found and verified [here](https://sepolia-blockscout.scroll.io/address/0x71073366a8B61b1b6634554a9e24cd07B31CB7D4#code).
+
+### Working Demo on Scroll Sepolia
+You can also experience our working demo on Scroll Sepolia [here]().
