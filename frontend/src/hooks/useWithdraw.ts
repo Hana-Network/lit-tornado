@@ -82,8 +82,8 @@ export const useWithdraw = ({
     setShowLoading(true);
     try {
       const litNodeClient = new LitJsSdk.LitNodeClient({
-        litNetwork: "serrano",
-        // litNetwork: "cayenne",
+        // litNetwork: "serrano",
+        litNetwork: "cayenne",
         debug: true,
       });
       await litNodeClient.connect();
