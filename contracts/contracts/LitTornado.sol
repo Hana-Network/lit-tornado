@@ -2,9 +2,9 @@
 pragma solidity ^0.8.9;
 
 import "./MerkleTreeWithHistory.sol";
-import "../node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import {ECDSA} from "../node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import {Strings} from "../node_modules/@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 contract LitTornado is MerkleTreeWithHistory, ReentrancyGuard {
     address public verifier;

@@ -11,15 +11,28 @@ const config: HardhatUserConfig = {
       url: process.env.MUMBAI_RPC_ENDPOINT,
       accounts: [process.env.PRIVATE_KEY!],
     },
-
-    // chronicle: {
-    //   url: process.env.CHRONICLE_RPC_ENDPOINT,
-    //   accounts: [process.env.PRIVATE_KEY!],
-    //   chainId: 175177,
-    // },
+    scrollSepolia: {
+      url: "https://sepolia-rpc.scroll.io/" || "",
+      accounts: [process.env.PRIVATE_KEY!],
+    },
   },
+  // etherscan: {
+  //   apiKey: process.env.ETHERSCAN_API_KEY,
+  // },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: {
+      scrollSepolia: "abc",
+    },
+    customChains: [
+      {
+        network: "scrollSepolia",
+        chainId: 534351,
+        urls: {
+          apiURL: "https://sepolia-blockscout.scroll.io/api",
+          browserURL: "https://sepolia-blockscout.scroll.io/",
+        },
+      },
+    ],
   },
 };
 

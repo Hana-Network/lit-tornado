@@ -1,4 +1,7 @@
 // npx hardhat run scripts/deploy.ts --network mumbai
+// npx hardhat run scripts/deploy.ts --network scrollSepolia
+// npx hardhat verify --network scrollSepolia 0x3b79660bde39f415ad649509259f995be428e006 0x324ACc4B2D6CAAb70E39cA7bd5b6F0D12EcC529b 100000000000000000
+// npx hardhat verify --network mumbai 0xf168fcbcf9b861b4f23e9502df5706de2ce73c06 0x324ACc4B2D6CAAb70E39cA7bd5b6F0D12EcC529b 100000000000000000
 import { parseEther } from "viem";
 import hre from "hardhat";
 
@@ -13,12 +16,10 @@ async function main() {
     // TREE_HEIGHT,
   ]);
 
-  // 0xec3a882a8f786a34fd305a2c9b3a45b0c78e4a91
-  // 0x30bb56f4eeb0cf40529527ecdfe576b904392bdb
-  // 0xb0d829de1848581ed84402fc4e1205c12b9fe190
-  // 0x75fc58514cf666640a3f5ca7d8e2f8c0fe262f86
-  // 0x2897217b19b1aa6a7f7579dc4e29218318272b06
+  // mumbai
   // 0xf168fcbcf9b861b4f23e9502df5706de2ce73c06
+  // scrollSepolia
+  // 0x3b79660bde39f415ad649509259f995be428e006
   console.log("LitTornado deployed to:", litTornado.address);
 }
 
