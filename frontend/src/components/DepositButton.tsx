@@ -15,12 +15,16 @@ export const DepositButton = ({
   secret: `0x${string}`;
   nullifier: `0x${string}`;
 }) => {
-  const { config } = usePrepareLitTornadoDeposit({
+  const {
+    config,
+    status: prepareStatus,
+    error: prepareError,
+  } = usePrepareLitTornadoDeposit({
     address: MIXINER_ADDRESS,
     args: [generateCommitment(secret, nullifier)],
     value: DENOMINATION,
   });
-
+  console.log({ config, prepareStatus, prepareError });
   const { data, write, status } = useLitTornadoDeposit(config);
 
   const {
@@ -32,6 +36,16 @@ export const DepositButton = ({
   });
 
   txReceipt && console.log({ txReceipt });
+
+  useEffect(() => {
+    if (prepareError) {
+      console.log(prepareError);
+      toast.error(
+        "An error has occurred.\nPlease check if the connected account holds 1Matic or more.",
+        { duration: 5000 }
+      );
+    }
+  }, [prepareError]);
 
   useEffect(() => {
     if (txReceipt?.status === "success") {
