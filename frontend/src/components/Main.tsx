@@ -74,18 +74,18 @@ export const Main = () => {
         <div id="withdrawReward"></div>
       </div>
       <div className="mb-6">
-        <div className="tabs flex justify-center w-full space-x-4">
+        <div className="daisy-tabs flex justify-center w-full space-x-4">
           <a
-            className={`tab tab-bordered flex-1 text-center ${
-              activeTab === "deposit" ? "tab-active" : ""
+            className={`daisy-tab daisy-tab-bordered flex-1 text-center ${
+              activeTab === "deposit" ? "daisy-tab-active" : ""
             }`}
             onClick={() => setActiveTab(Tab.Deposit)}
           >
             Deposit
           </a>
           <a
-            className={`tab tab-bordered flex-1 text-center ${
-              activeTab === "withdraw" ? "tab-active" : ""
+            className={`daisy-tab daisy-tab-bordered flex-1 text-center ${
+              activeTab === "withdraw" ? "daisy-tab-active" : ""
             }`}
             onClick={() => setActiveTab(Tab.Withdraw)}
           >
@@ -98,7 +98,7 @@ export const Main = () => {
         <label className="block text-base-content text-opacity-medium text-sm mb-2">
           Token
         </label>
-        <div className="badge badge-outline badge-primary">
+        <div className="daisy-badge daisy-badge-outline daisy-badge-primary">
           {polygonMumbai.nativeCurrency.symbol}
         </div>
       </div>
@@ -107,7 +107,7 @@ export const Main = () => {
         <label className="block text-base-content text-opacity-medium text-sm mb-2">
           Amount
         </label>
-        <div className="badge badge-outline badge-primary">{`${formatEther(
+        <div className="daisy-badge daisy-badge-outline daisy-badge-primary">{`${formatEther(
           DENOMINATION
         )} ${polygonMumbai.nativeCurrency.symbol}`}</div>
       </div>
@@ -120,7 +120,7 @@ export const Main = () => {
             </label>
             {/* <div className="prose">
               <span className="text-sm">Fee: </span> */}
-            <div className="badge badge-outline badge-primary">
+            <div className="daisy-badge daisy-badge-outline daisy-badge-primary">
               {formatEther(RELAYER_FEE)} {polygonMumbai.nativeCurrency.symbol}
             </div>
           </div>
@@ -131,7 +131,7 @@ export const Main = () => {
             <input
               type="text"
               placeholder="Paste here"
-              className="prose input input-bordered w-full max-w-xs"
+              className="prose daisy-input daisy-input-bordered w-full max-w-xs"
               value={recipientAddress || ""}
               onChange={(e) => {
                 const value = e.target.value;
@@ -148,7 +148,7 @@ export const Main = () => {
               Note(Secret & Nullifier)
             </label>
             <textarea
-              className="prose textarea textarea-bordered textarea-xs w-full max-w-xs"
+              className="prose daisy-textarea daisy-textarea-bordered daisy-textarea-xs w-full max-w-xs"
               value={JSON.stringify(note)}
               placeholder="Paste here"
               onChange={(e) => {
@@ -186,8 +186,13 @@ export const Main = () => {
           />
         )
       ) : (
-        <button className="btn btn-primary w-full" onClick={() => open()}>
-          {isConnecting && <span className="loading loading-spinner"></span>}
+        <button
+          className="daisy-btn daisy-btn-primary w-full"
+          onClick={() => open()}
+        >
+          {isConnecting && (
+            <span className="daisy-loading daisy-loading-spinner"></span>
+          )}
           Connect
         </button>
       )}

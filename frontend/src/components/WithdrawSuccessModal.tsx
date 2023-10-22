@@ -10,8 +10,8 @@ export const WithdrawSuccessModal = ({
 }) => {
   const explorerLink = `https://mumbai.polygonscan.com/tx/${txHash}`;
   return (
-    <dialog id="my_modal_1" className="modal modal-open">
-      <div className="modal-box">
+    <dialog id="my_daisy-modal_1" className="daisy-modal daisy-modal-open">
+      <div className="daisy-modal-box">
         <h3 className="font-bold text-lg prose">Withdraw successful🎉</h3>
         <p className="py-4 prose ">
           Transaction Hash:{" "}
@@ -23,16 +23,16 @@ export const WithdrawSuccessModal = ({
             href={explorerLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-secondary"
+            className="daisy-btn daisy-btn-secondary"
           >
             View on Explorer
           </a>
         </div>
 
-        <div className="modal-action">
+        <div className="daisy-modal-action">
           <div>
             <button
-              className="btn"
+              className="daisy-btn"
               onClick={() => {
                 setShowModal(false);
               }}

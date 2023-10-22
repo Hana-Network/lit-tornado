@@ -20,13 +20,15 @@ export const WithdrawButton = ({
   return (
     <>
       <button
-        className="btn btn-primary w-full"
+        className="daisy-btn daisy-btn-primary w-full"
         disabled={!note || !recipientAddress || showLoading}
         onClick={async () => {
           signMessageByPkp();
         }}
       >
-        {showLoading && <span className="loading loading-spinner"></span>}
+        {showLoading && (
+          <span className="daisy-loading daisy-loading-spinner"></span>
+        )}
         Withdraw
       </button>
     </>

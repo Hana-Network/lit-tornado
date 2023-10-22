@@ -14,20 +14,20 @@ export const DepositSuccessModal = ({
 }) => {
   const [copied, setCopied] = useState(false);
   return (
-    <dialog id="my_modal_1" className="modal modal-open">
-      <div className="modal-box">
+    <dialog className="daisy-modal daisy-modal-open">
+      <div className="daisy-modal-box">
         <h3 className="font-bold text-lg prose">Deposit successful🎉</h3>
         <p className="py-4 prose">
           Please keep this secret and nullifier safe, as they will be required
           for withdrawals🌪
         </p>
         <textarea
-          className="prose textarea textarea-bordered textarea-xs w-full max-w-xs"
+          className="prose daisy-textarea daisy-textarea-bordered daisy-textarea-xs w-full max-w-xs"
           value={message}
           readOnly
           rows={4}
         ></textarea>
-        <div className=" mt-4">
+        <div className="mt-4">
           <CopyToClipboard
             text={message}
             onCopy={() => {
@@ -35,13 +35,15 @@ export const DepositSuccessModal = ({
               setCopied(true);
             }}
           >
-            <button className="btn btn-accent ">Copy to clipboard</button>
+            <button className="daisy-btn daisy-btn-accent ">
+              Copy to clipboard
+            </button>
           </CopyToClipboard>
         </div>
-        <div className="modal-action">
+        <div className="daisy-modal-action">
           <div>
             <button
-              className="btn"
+              className="daisy-btn"
               disabled={!copied}
               onClick={() => {
                 onCloseDepositModal();

@@ -44,7 +44,7 @@ export const DepositButton = ({
 
   return (
     <button
-      className="btn btn-primary w-full"
+      className="daisy-btn daisy-btn-primary w-full"
       disabled={
         !write ||
         status === "loading" ||
@@ -56,7 +56,7 @@ export const DepositButton = ({
       }}
     >
       {(status === "loading" || txStatus === "loading") && (
-        <span className="loading loading-spinner"></span>
+        <span className="daisy-loading daisy-loading-spinner"></span>
       )}
       Deposit
     </button>
