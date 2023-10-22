@@ -12,9 +12,10 @@ const chains = [polygonMumbai];
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || "";
 
 const metadata = {
-  name: "Next Starter Template",
-  description: "A Next.js starter template with Web3Modal v3 + Wagmi",
-  url: "https://web3modal.com",
+  name: "Lit🔥Tornado🌪",
+  description:
+    "a mixer app like Tornado Cash but using Lit Protocol - achieving confidential transactions without zero-knowledge proofs!",
+  url: "https://github.com/Hana-Network/lit-tornado",
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
@@ -41,7 +42,7 @@ export default function Home() {
       {ready ? (
         <WagmiConfig config={wagmiConfig}>
           <Head>
-            <title>Tornado Cash Classic UI Replica</title>
+            <title>Lit🔥Tornado🌪</title>
             <link rel="icon" href="/favicon.ico" />
           </Head>
           <Header />
