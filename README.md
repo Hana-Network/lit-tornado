@@ -32,8 +32,7 @@ This comparison clearly showcases the innovative approach we took in migrating f
 At first glance, the two functions may appear almost identical. However, Tornado Cash's verifyProof is for zero-knowledge proof, whereas Lit Tornado's verifyMessage is for signature verification. This results in a significant difference in computation costs.
 
 
-
-## Lit Action Relayer: A Strong Caution on Security
+### Lit Action Relayer: A Strong Caution on Security
 
 The transaction content is created on the client side, and the Lit Action Relayer simply signs it. This is entirely insecure because, in a fully secure implementation, the relayer should validate the content of the transaction before signing it. Our implementation is meant solely for demonstration and does not uphold the security measures necessary for real-world applications.
 
