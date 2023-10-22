@@ -30,7 +30,7 @@ In this section, we will compare the implementation of Tornado Cash's smart cont
 [Tornado Cash Withdraw Function](https://github.com/tornadocash/tornado-core/blob/1ef6a263ac6a0e476d063fcb269a9df65a1bd56a/contracts/Tornado.sol#L76)
 
 - Here is the withdraw function in Lit Tornado's smart contract:  
-[Lit Tornado Withdraw Function](https://github.com/tornadocash/tornado-core/blob/1ef6a263ac6a0e476d063fcb269a9df65a1bd56a/contracts/Tornado.sol#L76)
+[Lit Tornado Withdraw Function](https://github.com/Hana-Network/lit-tornado/blob/8b1163136ef9c1f3724c21b0e75dc31b7aff33ca/contracts/contracts/LitTornado.sol#L141)
 
 At first glance, the two functions may appear almost identical. However, Tornado Cash's verifyProof is for zero-knowledge proof, whereas Lit Tornado's verifyMessage is for signature verification. This results in a significant difference in computation costs.
 
