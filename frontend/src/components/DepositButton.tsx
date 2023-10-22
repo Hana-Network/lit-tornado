@@ -24,7 +24,7 @@ export const DepositButton = ({
     args: [generateCommitment(secret, nullifier)],
     value: DENOMINATION,
   });
-  console.log({ config, prepareStatus, prepareError });
+  // console.log({ config, prepareStatus, prepareError });
   const { data, write, status } = useLitTornadoDeposit(config);
 
   const {
