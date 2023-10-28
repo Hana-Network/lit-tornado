@@ -1,5 +1,5 @@
 import {
-  MIXINER_ADDRESS,
+  MIXIER_ADDRESS,
   NOTE,
   PROVER_ACTION_IPFS_CID,
   PROVER_PKP_PUBLIC_KEY,
@@ -44,11 +44,11 @@ export const useWithdraw = ({
   const [showLoading, setShowLoading] = useState(false);
   const publicClient = usePublicClient();
   const { data: treeRoot } = useMerkleTreeWithHistoryGetLastRoot({
-    address: MIXINER_ADDRESS,
+    address: MIXIER_ADDRESS,
   });
 
   const { data: leaves } = useMerkleTreeWithHistoryGetLeaves({
-    address: MIXINER_ADDRESS,
+    address: MIXIER_ADDRESS,
   });
 
   const commitment = note && generateCommitment(note.secret, note.nullifier);
@@ -149,7 +149,7 @@ export const useWithdraw = ({
       // Relayer Lit Action
       const relayerTxRequest = await publicClient.prepareTransactionRequest({
         account: relayerAddress,
-        to: MIXINER_ADDRESS,
+        to: MIXIER_ADDRESS,
         data: encodeFunctionData({
           abi: litTornadoABI,
           functionName: "withdraw",

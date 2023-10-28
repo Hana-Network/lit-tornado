@@ -1,5 +1,5 @@
 "use client";
-import { DENOMINATION, MIXINER_ADDRESS } from "@/constants";
+import { DENOMINATION, MIXIER_ADDRESS } from "@/constants";
 import { usePrepareLitTornadoDeposit, useLitTornadoDeposit } from "@/contracts";
 import { generateCommitment } from "@/utils";
 import { useEffect } from "react";
@@ -20,7 +20,7 @@ export const DepositButton = ({
     status: prepareStatus,
     error: prepareError,
   } = usePrepareLitTornadoDeposit({
-    address: MIXINER_ADDRESS,
+    address: MIXIER_ADDRESS,
     args: [generateCommitment(secret, nullifier)],
     value: DENOMINATION,
   });
